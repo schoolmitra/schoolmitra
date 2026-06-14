@@ -1751,27 +1751,11 @@ body {
     </div>
   </div>
   <div class="forms-grid">
-    <div class="form-card" onclick="openModal('form_mdm')">
-      <div class="form-icon">🍽️</div>
-      <div>
-        <div class="form-name">MDM उपस्थिति पंजिका</div>
-        <div class="form-type">मध्याह्न भोजन</div>
-      </div>
-      <div class="form-arrow">›</div>
-    </div>
     <div class="form-card" onclick="openModal('form_leave')">
       <div class="form-icon">📋</div>
       <div>
         <div class="form-name">शिक्षक अवकाश आवेदन</div>
         <div class="form-type">सेवा सम्बन्धित</div>
-      </div>
-      <div class="form-arrow">›</div>
-    </div>
-    <div class="form-card" onclick="openModal('form_admission')">
-      <div class="form-icon">📝</div>
-      <div>
-        <div class="form-name">प्रवेश आवेदन फॉर्म</div>
-        <div class="form-type">छात्र प्रवेश</div>
       </div>
       <div class="form-arrow">›</div>
     </div>
@@ -1791,14 +1775,7 @@ body {
       </div>
       <div class="form-arrow">›</div>
     </div>
-    <div class="form-card" onclick="openModal('form_transfer')">
-      <div class="form-icon">📤</div>
-      <div>
-        <div class="form-name">TC (प्रस्थान प्रमाण पत्र)</div>
-        <div class="form-type">दस्तावेज़</div>
-      </div>
-      <div class="form-arrow">›</div>
-    </div>
+
     <div class="form-card" onclick="openModal('form_salary')">
       <div class="form-icon">💵</div>
       <div>
@@ -1815,6 +1792,16 @@ body {
       </div>
       <div class="form-arrow">›</div>
     </div>
+    <a class="form-card" href="eShikshakosh_DCF_Teacher_Form.html" target="_blank" style="text-decoration:none;color:inherit;border:2px solid var(--blue);background:linear-gradient(135deg,#E8F0FB,#EFF6FF);">
+      <div class="form-icon" style="background:linear-gradient(135deg,#003580,#0047AD);">
+        <span style="font-size:1.3rem;">🏫</span>
+      </div>
+      <div>
+        <div class="form-name" style="color:var(--blue);">e-Shikshakosh DCF Form</div>
+        <div class="form-type">शिक्षक डेटा कैप्चर फॉर्म</div>
+      </div>
+      <div class="form-arrow" style="color:var(--blue);font-weight:900;">↗</div>
+    </a>
     <a class="form-card" href="assets_declaration_form.html" target="_blank" style="text-decoration:none;color:inherit;border:2px solid var(--saffron);">
       <div class="form-icon" style="background:#FFF3E0;">🏛️</div>
       <div>
@@ -2097,10 +2084,8 @@ const qpopupContent = {
   forms: {
     title: '📄 फॉर्म केंद्र',
     html: `<div class="qp-link-list">
-      <div class="qp-link" onclick="closeQPopupDirect();openModal('form_mdm')"><div class="qp-link-icon">🍽️</div><div><div class="qp-link-name">MDM उपस्थिति पंजिका</div><div class="qp-link-desc">मध्याह्न भोजन</div></div><div class="qp-link-arr">›</div></div>
+      <a class="qp-link" href="eShikshakosh_DCF_Teacher_Form.html" target="_blank"><div class="qp-link-icon" style="background:linear-gradient(135deg,#003580,#0047AD);color:white;font-size:1.1rem;">🏫</div><div><div class="qp-link-name">e-Shikshakosh DCF Form</div><div class="qp-link-desc">शिक्षक डेटा कैप्चर फॉर्म</div></div><div class="qp-link-arr">↗</div></a>
       <div class="qp-link" onclick="closeQPopupDirect();openModal('form_leave')"><div class="qp-link-icon">📋</div><div><div class="qp-link-name">शिक्षक अवकाश आवेदन</div><div class="qp-link-desc">CL / EL / ML प्रारूप</div></div><div class="qp-link-arr">›</div></div>
-      <div class="qp-link" onclick="closeQPopupDirect();openModal('form_admission')"><div class="qp-link-icon">📝</div><div><div class="qp-link-name">प्रवेश आवेदन फॉर्म</div><div class="qp-link-desc">छात्र नामांकन</div></div><div class="qp-link-arr">›</div></div>
-      <div class="qp-link" onclick="closeQPopupDirect();openModal('form_transfer')"><div class="qp-link-icon">📤</div><div><div class="qp-link-name">TC प्रारूप</div><div class="qp-link-desc">प्रस्थान प्रमाण पत्र</div></div><div class="qp-link-arr">›</div></div>
       <div class="qp-link" onclick="closeQPopupDirect();openModal('form_scholarship')"><div class="qp-link-icon">🎓</div><div><div class="qp-link-name">छात्रवृत्ति आवेदन</div><div class="qp-link-desc">SC/ST/OBC</div></div><div class="qp-link-arr">›</div></div>
       <a class="qp-link" href="assets_declaration_form.html" target="_blank"><div class="qp-link-icon">🏛️</div><div><div class="qp-link-name">Assets Declaration Form</div><div class="qp-link-desc">शिक्षक संपत्ति घोषणा पत्र</div></div><div class="qp-link-arr">↗</div></a>
       <button class="qp-goto-btn" onclick="closeQPopupDirect();goTo('forms')">सभी फॉर्म देखें ↓</button>

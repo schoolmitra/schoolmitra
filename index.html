@@ -702,6 +702,367 @@ body {
 }
 .form-arrow { margin-left: auto; color: var(--text-light); font-size: 1rem; }
 
+/* ===== BUILT-IN CALENDAR ===== */
+.cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.cl-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  color: var(--text-mid);
+  font-weight: 600;
+}
+.cl-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.cal-month-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.cmcard-header {
+  padding: 16px 20px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cmcard-month-name { font-size: 1.2rem; font-weight: 900; }
+.cmcard-year { font-size: 0.85rem; opacity: 0.8; }
+.cmcard-holiday-count {
+  background: rgba(255,255,255,0.2);
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.cmcard-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #f8f8f8;
+  border-bottom: 1px solid #eee;
+}
+.cmcard-wd {
+  text-align: center;
+  padding: 8px 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-light);
+}
+.cmcard-wd.sun { color: #E53935; }
+.cmcard-wd.sat { color: #1565C0; }
+.cmcard-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 8px;
+  gap: 3px;
+}
+.cmcard-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  position: relative;
+  cursor: default;
+  transition: all 0.15s;
+}
+.cmcard-day.empty { background: transparent; }
+.cmcard-day.sunday { color: #E53935; }
+.cmcard-day.saturday { color: #1565C0; }
+.cmcard-day.today {
+  background: #1565C0;
+  color: white !important;
+  font-weight: 900;
+  box-shadow: 0 2px 8px rgba(21,101,192,0.4);
+}
+.cmcard-day.holiday-national { background: #FFEBEE; color: #B71C1C; }
+.cmcard-day.holiday-religious { background: #FFF3E0; color: #E65100; }
+.cmcard-day.holiday-state { background: #E8F5E9; color: #1B5E20; }
+.cmcard-day.holiday-vacation { background: #F3E5F5; color: #4A148C; }
+.cmcard-day.holiday-national.sunday,
+.cmcard-day.holiday-religious.sunday,
+.cmcard-day.holiday-state.sunday { color: #B71C1C; }
+.hday-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  position: absolute;
+  bottom: 3px;
+}
+/* Holiday list below calendar */
+.cal-holiday-list {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.chl-header {
+  background: linear-gradient(135deg, var(--blue), var(--blue-light));
+  color: white;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.chl-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.82rem;
+}
+.chl-item:last-child { border-bottom: none; }
+.chl-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.chl-date { color: var(--text-light); font-size: 0.75rem; min-width: 90px; }
+.chl-name { font-weight: 600; color: var(--text-dark); flex: 1; }
+.chl-empty {
+  padding: 16px;
+  text-align: center;
+  color: var(--text-light);
+  font-size: 0.85rem;
+}
+/* Bottom month nav */
+.cal-month-nav {
+  background: var(--blue);
+  border-radius: var(--radius);
+  padding: 10px 8px;
+  box-shadow: var(--shadow-md);
+}
+.cmn-scroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 4px;
+}
+.cmn-scroll::-webkit-scrollbar { display: none; }
+.cmn-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.85);
+  border-radius: 100px;
+  padding: 7px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.cmn-btn:hover { background: rgba(255,255,255,0.2); color: white; }
+.cmn-btn.active {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: white;
+  box-shadow: 0 2px 10px rgba(255,107,0,0.4);
+}
+.cmn-btn.current {
+  border-color: #FFD700;
+  color: #FFD700;
+}
+.cmn-btn.current.active {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: white;
+}
+
+/* ===== IMPORTANT LINKS ===== */
+.implink-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+.implink-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  text-decoration: none;
+  color: var(--text-dark);
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid transparent;
+  transition: all 0.25s;
+  position: relative;
+}
+.implink-card:hover {
+  border-color: var(--saffron);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+.implink-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.implink-info { flex: 1; }
+.implink-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 2px;
+}
+.implink-url {
+  font-size: 0.72rem;
+  color: var(--blue);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.implink-desc {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  line-height: 1.45;
+}
+.implink-arrow {
+  font-size: 1.3rem;
+  color: var(--saffron);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ===== TOOLS ===== */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+}
+.tool-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid transparent;
+  transition: all 0.25s;
+  text-decoration: none;
+  color: var(--text-dark);
+  display: block;
+}
+.tool-card:hover {
+  border-color: var(--blue);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+.tool-header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 14px;
+  position: relative;
+}
+.tool-icon {
+  font-size: 2rem;
+  width: 48px;
+  height: 48px;
+  background: var(--blue-pale);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.tool-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 2px;
+}
+.tool-sub {
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+.tool-ext-arrow {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 1.2rem;
+  color: var(--saffron);
+  font-weight: 700;
+}
+.tool-desc {
+  font-size: 0.82rem;
+  color: var(--text-mid);
+  line-height: 1.55;
+  margin-bottom: 12px;
+}
+.tool-badge {
+  display: inline-block;
+  background: var(--blue-pale);
+  color: var(--blue);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+
+/* DOB Calculator */
+.dob-body { display: flex; flex-direction: column; gap: 12px; }
+.dob-row { display: flex; flex-direction: column; gap: 4px; }
+.dob-label { font-size: 0.78rem; font-weight: 600; color: var(--text-mid); }
+.dob-input {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 0.9rem;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.dob-input:focus { border-color: var(--blue); }
+.dob-calc-btn {
+  background: linear-gradient(135deg, var(--blue), var(--blue-light));
+  color: white;
+  border: none;
+  border-radius: 9px;
+  padding: 11px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+.dob-calc-btn:hover { opacity: 0.9; transform: scale(1.02); }
+.dob-result {
+  background: linear-gradient(135deg, #E8F0FB, #EFF6FF);
+  border: 1.5px solid #BDD0F5;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 0.88rem;
+  color: var(--blue);
+  font-weight: 600;
+  line-height: 1.8;
+  text-align: center;
+}
+
 /* ===== FOOTER ===== */
 .footer {
   background: var(--blue);
@@ -725,6 +1086,367 @@ body {
   transition: color 0.2s;
 }
 .footer-links a:hover { color: var(--gold); }
+
+/* ===== QUICK POPUP ===== */
+.qpopup-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 3000;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+.qpopup-overlay.active { display: flex; }
+.qpopup {
+  background: var(--white);
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 640px;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 -8px 40px rgba(0,0,0,0.25);
+  animation: slideUp 0.32s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.qpopup-header {
+  background: linear-gradient(135deg, var(--blue), var(--blue-light));
+  color: white;
+  padding: 18px 20px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-radius: 24px 24px 0 0;
+}
+.qpopup-title { font-size: 1.05rem; font-weight: 800; }
+.qpopup-close {
+  background: rgba(255,255,255,0.18);
+  border: none;
+  color: white;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.qpopup-body { padding: 20px; }
+
+/* Popup inner link cards */
+.qp-link-list { display: flex; flex-direction: column; gap: 10px; }
+.qp-link { display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--cream); border-radius: 12px; text-decoration: none; color: var(--text-dark); border: 1.5px solid transparent; transition: all 0.2s; cursor: pointer; }
+.qp-link:hover { border-color: var(--saffron); background: #FFF8F0; }
+.qp-link-icon { font-size: 1.5rem; width: 42px; height: 42px; border-radius: 10px; background: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: var(--shadow-sm); }
+.qp-link-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 2px; }
+.qp-link-desc { font-size: 0.76rem; color: var(--text-light); }
+.qp-link-arr { margin-left: auto; color: var(--saffron); font-weight: 700; font-size: 1.1rem; flex-shrink: 0; }
+.qp-goto-btn { display: block; width: 100%; margin-top: 14px; background: linear-gradient(135deg, var(--saffron), var(--saffron-dark)); color: white; border: none; border-radius: 12px; padding: 13px; font-size: 0.95rem; font-weight: 700; font-family: 'Noto Sans Devanagari', sans-serif; cursor: pointer; text-align: center; transition: all 0.2s; }
+.qp-goto-btn:hover { opacity: 0.9; transform: scale(1.01); }
+
+/* ===== MY SCHOOL CARD ===== */
+.myschool-card {
+  background: linear-gradient(135deg, #003580 0%, #0047AD 60%, #1565C0 100%);
+  border-radius: var(--radius-lg);
+  padding: 36px 40px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+.myschool-card::before {
+  content: '🏫';
+  position: absolute;
+  right: -30px;
+  bottom: -30px;
+  font-size: 11rem;
+  opacity: 0.05;
+  pointer-events: none;
+}
+.myschool-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 64px rgba(0,53,128,0.38);
+}
+.myschool-left { flex: 1; }
+.myschool-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 100px;
+  margin-bottom: 14px;
+  letter-spacing: 0.5px;
+}
+.myschool-name {
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: white;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+.myschool-name span {
+  background: linear-gradient(90deg, #FFD700, #FF8C38);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.myschool-location {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 18px;
+}
+.myschool-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+.ms-chip {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.9);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 100px;
+}
+.myschool-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ms-btn {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 10px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.ms-btn.primary {
+  background: var(--saffron);
+  color: white;
+  box-shadow: 0 4px 16px rgba(255,107,0,0.4);
+}
+.ms-btn.primary:hover { background: var(--saffron-light); transform: scale(1.04); }
+.ms-btn.secondary {
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  color: white;
+}
+.ms-btn.secondary:hover { background: rgba(255,255,255,0.22); }
+.myschool-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.ms-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.ms-stat {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 12px 18px;
+  text-align: center;
+  min-width: 80px;
+}
+.ms-stat-num {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #FFD700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.ms-stat-label {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.7);
+}
+.ms-headmaster {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 12px 16px;
+  width: 100%;
+}
+.ms-hm-icon {
+  font-size: 1.8rem;
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ms-hm-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: white;
+}
+.ms-hm-post {
+  font-size: 0.72rem;
+  color: var(--gold);
+  margin-top: 2px;
+}
+@media (max-width: 768px) {
+  .myschool-card { flex-direction: column; padding: 24px 20px; }
+  .myschool-right { align-items: stretch; width: 100%; }
+  .ms-stat-grid { grid-template-columns: repeat(4,1fr); }
+}
+@media (max-width: 480px) {
+  .ms-stat-grid { grid-template-columns: repeat(2,1fr); }
+  .myschool-name { font-size: 1.3rem; }
+}
+
+/* ===== CALENDAR CARD ===== */
+.cal-preview-card {
+  background: linear-gradient(135deg, var(--blue) 0%, #0047AD 100%);
+  border-radius: var(--radius-lg);
+  padding: 32px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+.cal-preview-card::before {
+  content: '📅';
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
+  font-size: 9rem;
+  opacity: 0.06;
+  pointer-events: none;
+}
+.cal-preview-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 60px rgba(0,53,128,0.35);
+}
+.cal-preview-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.cal-big-icon {
+  font-size: 3.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  flex-shrink: 0;
+}
+.cal-card-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #FFD700;
+  margin-bottom: 4px;
+}
+.cal-card-sub {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 14px;
+}
+.cal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cal-tag {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.9);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 100px;
+}
+.cal-preview-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.cal-mini-months {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.cal-mini-month {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  padding: 8px 14px;
+  text-align: center;
+  color: rgba(255,255,255,0.85);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.cal-mini-month span {
+  color: #FFD700;
+  font-size: 0.72rem;
+}
+.cal-open-btn {
+  background: var(--saffron);
+  border: none;
+  color: white;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(255,107,0,0.4);
+  white-space: nowrap;
+}
+.cal-open-btn:hover {
+  background: var(--saffron-light);
+  transform: scale(1.05);
+}
+@media (max-width: 768px) {
+  .cal-preview-card {
+    flex-direction: column;
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .cal-preview-left { flex-direction: column; text-align: center; }
+  .cal-tags { justify-content: center; }
+  .cal-preview-right { align-items: center; width: 100%; }
+  .cal-mini-months { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 480px) {
+  .cal-mini-months { grid-template-columns: 1fr 1fr; }
+}
 
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 6px; }
@@ -782,8 +1504,11 @@ body {
     <li><a href="#yojana">योजनाएं</a></li>
     <li><a href="#admission">प्रवेश</a></li>
     <li><a href="#forms">फॉर्म</a></li>
+    <li><a href="#implinks">महत्वपूर्ण लिंक</a></li>
+    <li><a href="#tools">टूल्स</a></li>
     <li><a href="#calendar">अवकाश</a></li>
     <li><a href="#assistant">AI सहायक</a></li>
+    <li><a href="#myschool" style="color:#FFD700;font-weight:700;">🏫 हमारा विद्यालय</a></li>
   </ul>
   <button class="nav-menu-btn" onclick="toggleMenu()">☰</button>
 </nav>
@@ -816,30 +1541,51 @@ body {
 
 <!-- QUICK ACTIONS -->
 <div class="quick-actions">
-  <div class="qa-card" onclick="scrollTo('yojana')">
+  <div class="qa-card" onclick="openQPopup('yojana')">
     <span class="qa-icon">📋</span>
     <div class="qa-title">सरकारी योजनाएं</div>
     <div class="qa-desc">सभी योजनाओं की जानकारी</div>
   </div>
-  <div class="qa-card" onclick="scrollTo('admission')">
+  <div class="qa-card" onclick="openQPopup('admission')">
     <span class="qa-icon">📝</span>
     <div class="qa-title">छात्र प्रवेश</div>
     <div class="qa-desc">Admission प्रक्रिया गाइड</div>
   </div>
-  <div class="qa-card" onclick="scrollTo('forms')">
+  <div class="qa-card" onclick="openQPopup('forms')">
     <span class="qa-icon">📄</span>
     <div class="qa-title">फॉर्म केंद्र</div>
     <div class="qa-desc">सभी जरूरी फॉर्म यहाँ</div>
   </div>
-  <div class="qa-card" onclick="scrollTo('calendar')">
+  <div class="qa-card" onclick="openQPopup('calendar')">
     <span class="qa-icon">📅</span>
     <div class="qa-title">अवकाश कैलेंडर</div>
     <div class="qa-desc">2026 छुट्टियों की सूची</div>
   </div>
-  <div class="qa-card" onclick="scrollTo('assistant')">
+  <div class="qa-card" onclick="openQPopup('implinks')">
+    <span class="qa-icon">🔗</span>
+    <div class="qa-title">महत्वपूर्ण लिंक</div>
+    <div class="qa-desc">सरकारी पोर्टल सीधे खोलें</div>
+  </div>
+  <div class="qa-card" onclick="openQPopup('tools')">
+    <span class="qa-icon">🛠️</span>
+    <div class="qa-title">उपयोगी टूल्स</div>
+    <div class="qa-desc">DOB, Photo, PDF टूल्स</div>
+  </div>
+  <div class="qa-card" onclick="openQPopup('assistant')">
     <span class="qa-icon">🤖</span>
     <div class="qa-title">AI सहायक</div>
     <div class="qa-desc">तुरंत जवाब पाएं</div>
+  </div>
+</div>
+
+<!-- QUICK POPUP OVERLAY -->
+<div class="qpopup-overlay" id="qpopupOverlay" onclick="closeQPopup(event)">
+  <div class="qpopup" id="qpopupBox">
+    <div class="qpopup-header">
+      <div class="qpopup-title" id="qpopupTitle"></div>
+      <button class="qpopup-close" onclick="closeQPopupDirect()">✕</button>
+    </div>
+    <div class="qpopup-body" id="qpopupBody"></div>
   </div>
 </div>
 
@@ -985,6 +1731,13 @@ body {
         <div class="adm-desc">Admission Register सही तरीके से भरने की विधि और महत्व</div>
       </div>
     </div>
+    <a class="adm-card" href="https://schoolmitra.github.io/addmission-/" target="_blank" style="text-decoration:none;color:inherit;border:2px solid var(--saffron);background:linear-gradient(135deg,#FFF8F0,#FFF3E0);">
+      <div class="adm-num" style="background:linear-gradient(135deg,var(--saffron),var(--saffron-dark));font-size:1.4rem;">🌐</div>
+      <div>
+        <div class="adm-title" style="color:var(--saffron-dark);">ऑनलाइन नामांकन पोर्टल</div>
+        <div class="adm-desc">schoolmitra.github.io पर छात्र का ऑनलाइन नामांकन करें — सीधे यहाँ से खोलें ↗</div>
+      </div>
+    </a>
   </div>
 </div>
 
@@ -1062,6 +1815,14 @@ body {
       </div>
       <div class="form-arrow">›</div>
     </div>
+    <a class="form-card" href="assets_declaration_form.html" target="_blank" style="text-decoration:none;color:inherit;border:2px solid var(--saffron);">
+      <div class="form-icon" style="background:#FFF3E0;">🏛️</div>
+      <div>
+        <div class="form-name">Assets Declaration Form</div>
+        <div class="form-type">शिक्षक संपत्ति घोषणा पत्र</div>
+      </div>
+      <div class="form-arrow" style="color:var(--saffron);font-weight:900;">↗</div>
+    </a>
   </div>
 </div>
 
@@ -1093,17 +1854,193 @@ body {
   </div>
 </div>
 
+<!-- MY SCHOOL SECTION -->
+<div class="section" id="myschool">
+  <div class="section-header">
+    <div class="section-stripe"></div>
+    <div>
+      <div class="section-title">🏫 हमारा विद्यालय</div>
+      <div class="section-subtitle">उत्क्रमित मध्य विद्यालय, गढ़वा कटौना — जमुई, बिहार</div>
+    </div>
+  </div>
+
+  <div class="myschool-card" onclick="window.open('https://schoolmitra.github.io/ums-garhwa-katouna/', '_blank')">
+    <div class="myschool-left">
+      <div class="myschool-badge">🏛️ सरकारी विद्यालय</div>
+      <div class="myschool-name">उत्क्रमित मध्य विद्यालय<br><span>गढ़वा कटौना</span></div>
+      <div class="myschool-location">📍 प्रखंड - बरहट &nbsp;|&nbsp; जिला - जमुई, बिहार</div>
+      <div class="myschool-meta">
+        <span class="ms-chip">📚 कक्षा 1 से 8</span>
+        <span class="ms-chip">👨‍🏫 9+ शिक्षक</span>
+        <span class="ms-chip">🍱 MDM योजना</span>
+        <span class="ms-chip">✅ BSEB मान्यता</span>
+      </div>
+      <div class="myschool-links">
+        <a class="ms-btn primary" href="https://schoolmitra.github.io/ums-garhwa-katouna/" target="_blank" onclick="event.stopPropagation()">🏫 विद्यालय वेबसाइट →</a>
+        <a class="ms-btn secondary" href="https://schoolmitra.github.io/ums-garhwa-katouna/result.html" target="_blank" onclick="event.stopPropagation()">📊 Result देखें</a>
+        <a class="ms-btn secondary" href="https://umsgarhwakatouna-stack.github.io/ums-admission/" target="_blank" onclick="event.stopPropagation()">📋 नामांकन</a>
+      </div>
+    </div>
+    <div class="myschool-right">
+      <div class="ms-stat-grid">
+        <div class="ms-stat"><span class="ms-stat-num">1–8</span><div class="ms-stat-label">कक्षाएं</div></div>
+        <div class="ms-stat"><span class="ms-stat-num">9+</span><div class="ms-stat-label">शिक्षक</div></div>
+        <div class="ms-stat"><span class="ms-stat-num">95%</span><div class="ms-stat-label">परिणाम</div></div>
+        <div class="ms-stat"><span class="ms-stat-num">Free</span><div class="ms-stat-label">शिक्षा</div></div>
+      </div>
+      <div class="ms-headmaster">
+        <div class="ms-hm-icon">👨‍💼</div>
+        <div>
+          <div class="ms-hm-name">श्री बिपिन कुमार आर्या</div>
+          <div class="ms-hm-post">प्रधान शिक्षक</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- CALENDAR SECTION -->
-<div class="calendar-embed-section" id="calendar">
+<div class="section" id="calendar">
   <div class="section-header">
     <div class="section-stripe"></div>
     <div>
       <div class="section-title">सरकारी अवकाश कैलेंडर 2026</div>
-      <div class="section-subtitle">बिहार सरकार — शिक्षा विभाग द्वारा अधिसूचित अवकाश तालिका</div>
+      <div class="section-subtitle">बिहार शिक्षा विभाग | <span id="calCurrentMonthLabel" style="color:var(--saffron);font-weight:700;"></span></div>
     </div>
   </div>
-  <div class="calendar-iframe-wrap">
-    <iframe src="bihar_holiday_calendar_2026.html" title="Bihar Holiday Calendar 2026" scrolling="yes"></iframe>
+  <div class="cal-legend">
+    <span class="cl-item"><span class="cl-dot" style="background:#E53935;"></span>राष्ट्रीय</span>
+    <span class="cl-item"><span class="cl-dot" style="background:#E65100;"></span>धार्मिक</span>
+    <span class="cl-item"><span class="cl-dot" style="background:#1B5E20;"></span>राजकीय</span>
+    <span class="cl-item"><span class="cl-dot" style="background:#4A148C;"></span>दीर्घ</span>
+    <span class="cl-item"><span class="cl-dot" style="background:#1565C0;"></span>आज</span>
+  </div>
+  <div class="cal-month-card" id="calMonthCard"></div>
+  <div class="cal-holiday-list" id="calHolidayList"></div>
+  <div class="cal-month-nav">
+    <div class="cmn-scroll">
+      <button class="cmn-btn" id="cmn-0" onclick="calShowMonth(0)">जनवरी</button>
+      <button class="cmn-btn" id="cmn-1" onclick="calShowMonth(1)">फरवरी</button>
+      <button class="cmn-btn" id="cmn-2" onclick="calShowMonth(2)">मार्च</button>
+      <button class="cmn-btn" id="cmn-3" onclick="calShowMonth(3)">अप्रैल</button>
+      <button class="cmn-btn" id="cmn-4" onclick="calShowMonth(4)">मई</button>
+      <button class="cmn-btn" id="cmn-5" onclick="calShowMonth(5)">जून</button>
+      <button class="cmn-btn" id="cmn-6" onclick="calShowMonth(6)">जुलाई</button>
+      <button class="cmn-btn" id="cmn-7" onclick="calShowMonth(7)">अगस्त</button>
+      <button class="cmn-btn" id="cmn-8" onclick="calShowMonth(8)">सितम्बर</button>
+      <button class="cmn-btn" id="cmn-9" onclick="calShowMonth(9)">अक्टूबर</button>
+      <button class="cmn-btn" id="cmn-10" onclick="calShowMonth(10)">नवम्बर</button>
+      <button class="cmn-btn" id="cmn-11" onclick="calShowMonth(11)">दिसम्बर</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORTANT LINKS SECTION -->
+<div class="section" id="implinks">
+  <div class="section-header">
+    <div class="section-stripe"></div>
+    <div>
+      <div class="section-title">🔗 महत्वपूर्ण लिंक</div>
+      <div class="section-subtitle">सरकारी पोर्टल — सीधे यहाँ से खोलें</div>
+    </div>
+  </div>
+  <div class="implink-grid">
+
+    <a class="implink-card" href="https://eshikshakosh.bihar.gov.in/login" target="_blank">
+      <div class="implink-icon" style="background:linear-gradient(135deg,#003580,#0047AD);">📖</div>
+      <div class="implink-info">
+        <div class="implink-name">e-Shikshakosh</div>
+        <div class="implink-url">eshikshakosh.bihar.gov.in</div>
+        <div class="implink-desc">शिक्षक सेवा पुस्तिका, प्रोफाइल व प्रशिक्षण पोर्टल</div>
+      </div>
+      <div class="implink-arrow">↗</div>
+    </a>
+
+    <a class="implink-card" href="https://sdms.udiseplus.gov.in/p0/v1/login?null" target="_blank">
+      <div class="implink-icon" style="background:linear-gradient(135deg,#138808,#1a9e0a);">🏫</div>
+      <div class="implink-info">
+        <div class="implink-name">UDISE+ Portal</div>
+        <div class="implink-url">sdms.udiseplus.gov.in</div>
+        <div class="implink-desc">विद्यालय डेटा प्रबंधन — SDMS लॉगिन</div>
+      </div>
+      <div class="implink-arrow">↗</div>
+    </a>
+
+    <a class="implink-card" href="https://voters.eci.gov.in/download-eroll" target="_blank">
+      <div class="implink-icon" style="background:linear-gradient(135deg,#CC5500,#FF6B00);">🗳️</div>
+      <div class="implink-info">
+        <div class="implink-name">मतदाता सूची</div>
+        <div class="implink-url">voters.eci.gov.in</div>
+        <div class="implink-desc">Electoral Roll डाउनलोड — ECI पोर्टल</div>
+      </div>
+      <div class="implink-arrow">↗</div>
+    </a>
+
+  </div>
+</div>
+
+<!-- TOOLS SECTION -->
+<div class="section" id="tools">
+  <div class="section-header">
+    <div class="section-stripe"></div>
+    <div>
+      <div class="section-title">🛠️ उपयोगी टूल्स</div>
+      <div class="section-subtitle">शिक्षकों के लिए जरूरी ऑनलाइन टूल्स</div>
+    </div>
+  </div>
+  <div class="tools-grid">
+
+    <!-- DOB Calculator -->
+    <div class="tool-card" id="dobCard">
+      <div class="tool-header">
+        <div class="tool-icon">🎂</div>
+        <div>
+          <div class="tool-name">आयु / DOB कैलकुलेटर</div>
+          <div class="tool-sub">जन्म तिथि से आयु निकालें</div>
+        </div>
+      </div>
+      <div class="dob-body">
+        <div class="dob-row">
+          <label class="dob-label">जन्म तिथि (Date of Birth)</label>
+          <input type="date" class="dob-input" id="dobInput">
+        </div>
+        <div class="dob-row">
+          <label class="dob-label">किस तिथि तक आयु चाहिए?</label>
+          <input type="date" class="dob-input" id="refInput">
+        </div>
+        <button class="dob-calc-btn" onclick="calcDOB()">आयु निकालें →</button>
+        <div class="dob-result" id="dobResult" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- Photo Resizer -->
+    <a class="tool-card tool-link" href="https://image.pi7.org/reduce-image-size-in-kb" target="_blank">
+      <div class="tool-header">
+        <div class="tool-icon">🖼️</div>
+        <div>
+          <div class="tool-name">Photo Resizer (KB)</div>
+          <div class="tool-sub">फोटो का साइज KB में घटाएं</div>
+        </div>
+        <div class="tool-ext-arrow">↗</div>
+      </div>
+      <div class="tool-desc">Government form के लिए photo को 10KB, 20KB, 50KB में compress करें। बिना quality खोए!</div>
+      <div class="tool-badge">image.pi7.org</div>
+    </a>
+
+    <!-- PDF Resizer -->
+    <a class="tool-card tool-link" href="https://pdf.pi7.org/resize-pdf" target="_blank">
+      <div class="tool-header">
+        <div class="tool-icon">📄</div>
+        <div>
+          <div class="tool-name">PDF Resizer</div>
+          <div class="tool-sub">PDF फाइल छोटी करें</div>
+        </div>
+        <div class="tool-ext-arrow">↗</div>
+      </div>
+      <div class="tool-desc">बड़ी PDF को compress करके upload के लायक बनाएं। सरकारी पोर्टल पर आसानी से अपलोड हो।</div>
+      <div class="tool-badge">pdf.pi7.org</div>
+    </a>
+
   </div>
 </div>
 
@@ -1131,9 +2068,103 @@ body {
 </div>
 
 <script>
+// ===== QUICK POPUP =====
+const qpopupContent = {
+  yojana: {
+    title: '📋 सरकारी योजनाएं',
+    html: `<div class="qp-link-list">
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('mdm')"><div class="qp-link-icon">🍱</div><div><div class="qp-link-name">मध्याह्न भोजन (MDM)</div><div class="qp-link-desc">कक्षा 1-8 | पोषण योजना</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('uniform')"><div class="qp-link-icon">👗</div><div><div class="qp-link-name">मुफ्त ड्रेस योजना</div><div class="qp-link-desc">₹600 DBT | कक्षा 1-8</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('kishori')"><div class="qp-link-icon">📚</div><div><div class="qp-link-name">मुफ्त पाठ्य पुस्तक</div><div class="qp-link-desc">कक्षा 1-12 | निःशुल्क</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('bicycle')"><div class="qp-link-icon">🚲</div><div><div class="qp-link-name">साइकिल योजना</div><div class="qp-link-desc">₹3,000 | कक्षा 9</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('protsahan')"><div class="qp-link-icon">🎓</div><div><div class="qp-link-name">बालिका प्रोत्साहन</div><div class="qp-link-desc">₹25,000 - ₹50,000</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('scholarship')"><div class="qp-link-icon">💰</div><div><div class="qp-link-name">SC/ST/OBC छात्रवृत्ति</div><div class="qp-link-desc">मेधावी छात्र लाभ</div></div><div class="qp-link-arr">›</div></div>
+      <button class="qp-goto-btn" onclick="closeQPopupDirect();goTo('yojana')">सभी योजनाएं देखें ↓</button>
+    </div>`
+  },
+  admission: {
+    title: '📝 छात्र प्रवेश प्रक्रिया',
+    html: `<div class="qp-link-list">
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('rte')"><div class="qp-link-icon">⚖️</div><div><div class="qp-link-name">RTE Act 2009</div><div class="qp-link-desc">निःशुल्क और अनिवार्य शिक्षा</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('docs')"><div class="qp-link-icon">📄</div><div><div class="qp-link-name">आवश्यक दस्तावेज़</div><div class="qp-link-desc">आधार, जन्म प्रमाण, निवास</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('age')"><div class="qp-link-icon">📅</div><div><div class="qp-link-name">आयु सीमा — कक्षावार</div><div class="qp-link-desc">कक्षा 1 से 12 तक नियम</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('transfer')"><div class="qp-link-icon">📤</div><div><div class="qp-link-name">TC (Transfer Certificate)</div><div class="qp-link-desc">TC न हो तो भी प्रवेश</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('special')"><div class="qp-link-icon">♿</div><div><div class="qp-link-name">दिव्यांग छात्र प्रवेश</div><div class="qp-link-desc">CWSN विशेष प्रावधान</div></div><div class="qp-link-arr">›</div></div>
+      <a class="qp-goto-btn" href="https://schoolmitra.github.io/addmission-/" target="_blank" style="display:block;text-align:center;text-decoration:none;">🏫 ऑनलाइन नामांकन पोर्टल खोलें ↗</a>
+      <button class="qp-goto-btn" onclick="closeQPopupDirect();goTo('admission')" style="margin-top:8px;">पूरी गाइड देखें ↓</button>
+    </div>`
+  },
+  forms: {
+    title: '📄 फॉर्म केंद्र',
+    html: `<div class="qp-link-list">
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('form_mdm')"><div class="qp-link-icon">🍽️</div><div><div class="qp-link-name">MDM उपस्थिति पंजिका</div><div class="qp-link-desc">मध्याह्न भोजन</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('form_leave')"><div class="qp-link-icon">📋</div><div><div class="qp-link-name">शिक्षक अवकाश आवेदन</div><div class="qp-link-desc">CL / EL / ML प्रारूप</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('form_admission')"><div class="qp-link-icon">📝</div><div><div class="qp-link-name">प्रवेश आवेदन फॉर्म</div><div class="qp-link-desc">छात्र नामांकन</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('form_transfer')"><div class="qp-link-icon">📤</div><div><div class="qp-link-name">TC प्रारूप</div><div class="qp-link-desc">प्रस्थान प्रमाण पत्र</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();openModal('form_scholarship')"><div class="qp-link-icon">🎓</div><div><div class="qp-link-name">छात्रवृत्ति आवेदन</div><div class="qp-link-desc">SC/ST/OBC</div></div><div class="qp-link-arr">›</div></div>
+      <a class="qp-link" href="assets_declaration_form.html" target="_blank"><div class="qp-link-icon">🏛️</div><div><div class="qp-link-name">Assets Declaration Form</div><div class="qp-link-desc">शिक्षक संपत्ति घोषणा पत्र</div></div><div class="qp-link-arr">↗</div></a>
+      <button class="qp-goto-btn" onclick="closeQPopupDirect();goTo('forms')">सभी फॉर्म देखें ↓</button>
+    </div>`
+  },
+  calendar: {
+    title: '📅 अवकाश कैलेंडर 2026',
+    html: `<div class="qp-link-list">
+      <div class="qp-link" onclick="window.location.href='bihar_holiday_calendar_2026.html'"><div class="qp-link-icon">📅</div><div><div class="qp-link-name">पूरा कैलेंडर खोलें</div><div class="qp-link-desc">सभी 12 महीने | 75 अवकाश</div></div><div class="qp-link-arr">↗</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();goTo('calendar')"><div class="qp-link-icon">🗓️</div><div><div class="qp-link-name">Calendar Section देखें</div><div class="qp-link-desc">इसी पेज पर नीचे</div></div><div class="qp-link-arr">›</div></div>
+    </div>`
+  },
+  implinks: {
+    title: '🔗 महत्वपूर्ण लिंक',
+    html: `<div class="qp-link-list">
+      <a class="qp-link" href="https://eshikshakosh.bihar.gov.in/login" target="_blank"><div class="qp-link-icon">📖</div><div><div class="qp-link-name">e-Shikshakosh</div><div class="qp-link-desc">eshikshakosh.bihar.gov.in</div></div><div class="qp-link-arr">↗</div></a>
+      <a class="qp-link" href="https://sdms.udiseplus.gov.in/p0/v1/login?null" target="_blank"><div class="qp-link-icon">🏫</div><div><div class="qp-link-name">UDISE+ Portal</div><div class="qp-link-desc">sdms.udiseplus.gov.in</div></div><div class="qp-link-arr">↗</div></a>
+      <a class="qp-link" href="https://voters.eci.gov.in/download-eroll" target="_blank"><div class="qp-link-icon">🗳️</div><div><div class="qp-link-name">मतदाता सूची (ECI)</div><div class="qp-link-desc">voters.eci.gov.in</div></div><div class="qp-link-arr">↗</div></a>
+    </div>`
+  },
+  tools: {
+    title: '🛠️ उपयोगी टूल्स',
+    html: `<div class="qp-link-list">
+      <div class="qp-link" onclick="closeQPopupDirect();goTo('tools');"><div class="qp-link-icon">🎂</div><div><div class="qp-link-name">DOB / Age Calculator</div><div class="qp-link-desc">आयु + कक्षा सुझाव</div></div><div class="qp-link-arr">›</div></div>
+      <a class="qp-link" href="https://image.pi7.org/reduce-image-size-in-kb" target="_blank"><div class="qp-link-icon">🖼️</div><div><div class="qp-link-name">Photo Resizer (KB)</div><div class="qp-link-desc">image.pi7.org</div></div><div class="qp-link-arr">↗</div></a>
+      <a class="qp-link" href="https://pdf.pi7.org/resize-pdf" target="_blank"><div class="qp-link-icon">📄</div><div><div class="qp-link-name">PDF Resizer</div><div class="qp-link-desc">pdf.pi7.org</div></div><div class="qp-link-arr">↗</div></a>
+    </div>`
+  },
+  assistant: {
+    title: '🤖 AI सहायक',
+    html: `<div class="qp-link-list">
+      <div style="background:var(--blue-pale);border-radius:12px;padding:14px;margin-bottom:10px;font-size:0.85rem;color:var(--text-mid);">AI सहायक से कोई भी सवाल हिंदी में पूछें — योजना, फॉर्म, प्रवेश नियम सब!</div>
+      <div class="qp-link" onclick="closeQPopupDirect();askQuestion('MDM योजना में क्या दस्तावेज चाहिए?')"><div class="qp-link-icon">📋</div><div><div class="qp-link-name">MDM दस्तावेज</div><div class="qp-link-desc">AI से पूछें</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();askQuestion('कक्षा 1 में प्रवेश के लिए न्यूनतम आयु क्या है?')"><div class="qp-link-icon">👶</div><div><div class="qp-link-name">प्रवेश आयु</div><div class="qp-link-desc">AI से पूछें</div></div><div class="qp-link-arr">›</div></div>
+      <div class="qp-link" onclick="closeQPopupDirect();askQuestion('साइकिल योजना का लाभ कैसे मिलेगा?')"><div class="qp-link-icon">🚲</div><div><div class="qp-link-name">साइकिल योजना</div><div class="qp-link-desc">AI से पूछें</div></div><div class="qp-link-arr">›</div></div>
+      <button class="qp-goto-btn" onclick="closeQPopupDirect();goTo('assistant')">AI सहायक खोलें ↓</button>
+    </div>`
+  }
+};
+
+function openQPopup(key) {
+  const data = qpopupContent[key];
+  if (!data) return;
+  document.getElementById('qpopupTitle').textContent = data.title;
+  document.getElementById('qpopupBody').innerHTML = data.html;
+  document.getElementById('qpopupOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeQPopup(e) {
+  if (e.target === document.getElementById('qpopupOverlay')) closeQPopupDirect();
+}
+function closeQPopupDirect() {
+  document.getElementById('qpopupOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
 // ===== NAVIGATION =====
 function scrollTo(id) {
-  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function goTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 function toggleMenu() {
   alert('मोबाइल मेनू: ऊपर के लिंक पर जाएं');
@@ -1427,6 +2458,336 @@ function closeModal(e) {
 function closeModalDirect() {
   document.getElementById('modalOverlay').classList.remove('active');
 }
+
+// ===== BUILT-IN CALENDAR =====
+const calMonthNames = ["जनवरी","फरवरी","मार्च","अप्रैल","मई","जून","जुलाई","अगस्त","सितम्बर","अक्टूबर","नवम्बर","दिसम्बर"];
+const calMonthColors = [
+  "linear-gradient(135deg,#1565C0,#1976D2)",
+  "linear-gradient(135deg,#AD1457,#C2185B)",
+  "linear-gradient(135deg,#E65100,#F57C00)",
+  "linear-gradient(135deg,#1B5E20,#388E3C)",
+  "linear-gradient(135deg,#BF360C,#E64A19)",
+  "linear-gradient(135deg,#004D40,#00796B)",
+  "linear-gradient(135deg,#4A148C,#7B1FA2)",
+  "linear-gradient(135deg,#FF6F00,#FFA000)",
+  "linear-gradient(135deg,#0D47A1,#1565C0)",
+  "linear-gradient(135deg,#880E4F,#AD1457)",
+  "linear-gradient(135deg,#33691E,#558B2F)",
+  "linear-gradient(135deg,#37474F,#546E7A)"
+];
+const calWeekdays = ["रवि","सोम","मंग","बुध","गुरु","शुक्र","शनि"];
+
+// Bihar 2026 holidays — verified from official Bihar Shiksha Vibhag calendar
+const calHolidays = [
+  // जनवरी
+  {month:0, day:14, name:"मकर संक्रांति", type:"religious", days:1},
+  {month:0, day:23, name:"बसंत पंचमी", type:"religious", days:1},
+  {month:0, day:26, name:"गणतंत्र दिवस", type:"national", days:1},
+  // फरवरी
+  {month:1, day:1,  name:"संत रविदास जयंती", type:"state", days:1},
+  {month:1, day:4,  name:"शब-ए-बारात", type:"religious", days:1},
+  {month:1, day:15, name:"महाशिवरात्रि", type:"religious", days:1},
+  // मार्च
+  {month:2, day:3,  name:"होली", type:"religious", days:2},
+  {month:2, day:4,  name:"होली (द्वितीय)", type:"religious", days:1},
+  {month:2, day:13, name:"रमजान का अंतिम जुम्मा", type:"religious", days:1},
+  {month:2, day:21, name:"ईद-उल-फितर (ईद)", type:"religious", days:1},
+  {month:2, day:22, name:"बिहार दिवस", type:"state", days:1},
+  {month:2, day:27, name:"रामनवमी", type:"religious", days:1},
+  {month:2, day:31, name:"महावीर जयंती", type:"religious", days:1},
+  // अप्रैल
+  {month:3, day:3,  name:"गुड फ्राइडे", type:"religious", days:1},
+  {month:3, day:14, name:"भीम राव अंबेडकर जयंती", type:"national", days:1},
+  {month:3, day:23, name:"वीर कुंवर सिंह जयंती", type:"state", days:1},
+  {month:3, day:25, name:"जानकी नवमी", type:"religious", days:1},
+  // मई
+  {month:4, day:1,  name:"मई दिवस / बुद्ध पूर्णिमा", type:"national", days:1},
+  {month:4, day:28, name:"ईद-उल-अजहा (बकरीद)", type:"religious", days:1},
+  // जून — ग्रीष्मावकाश 1-20 जून
+  {month:5, day:1,  name:"ग्रीष्मावकाश", type:"vacation", days:20},
+  {month:5, day:2,  name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:3,  name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:4,  name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:5,  name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:6,  name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:7,  name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:8,  name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:9,  name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:10, name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:11, name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:12, name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:13, name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:14, name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:15, name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:16, name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:17, name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:18, name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:19, name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:20, name:"ग्रीष्मावकाश", type:"vacation", days:1},
+  {month:5, day:26, name:"मुहर्रम", type:"religious", days:1},
+  {month:5, day:29, name:"कबीर जयंती", type:"state", days:1},
+  // जुलाई — कोई अवकाश नहीं
+  // अगस्त
+  {month:7, day:4,  name:"चेहल्लुम", type:"religious", days:1},
+  {month:7, day:15, name:"स्वतंत्रता दिवस", type:"national", days:1},
+  {month:7, day:24, name:"अंतिम श्रावणी सोमवार", type:"religious", days:1},
+  {month:7, day:26, name:"हजरत मोहम्मद साहब जन्म दिन", type:"religious", days:1},
+  {month:7, day:28, name:"रक्षा बंधन", type:"religious", days:1},
+  // सितम्बर
+  {month:8, day:4,  name:"श्री कृष्ण जन्माष्टमी", type:"religious", days:1},
+  {month:8, day:14, name:"हर तालिका व्रत (तीजव्रत)", type:"religious", days:1},
+  {month:8, day:25, name:"अनंत चतुर्दशी", type:"religious", days:1},
+  // अक्टूबर
+  {month:9, day:2,  name:"महात्मा गांधी जयंती", type:"national", days:1},
+  {month:9, day:5,  name:"जीवित पुत्रिका व्रत (जीउतीया)", type:"religious", days:1},
+  {month:9, day:11, name:"दुर्गापूजा (कलश स्थापना)", type:"religious", days:1},
+  {month:9, day:17, name:"दुर्गापूजा", type:"religious", days:1},
+  {month:9, day:18, name:"दुर्गापूजा", type:"religious", days:1},
+  {month:9, day:19, name:"दुर्गापूजा", type:"religious", days:1},
+  {month:9, day:20, name:"दुर्गापूजा", type:"religious", days:1},
+  {month:9, day:21, name:"दुर्गापूजा", type:"religious", days:1},
+  // नवम्बर — दीपावली अवकाश 7-17 नवम्बर
+  {month:10, day:7,  name:"दीपावली / छठ पूजा अवकाश", type:"vacation", days:1},
+  {month:10, day:8,  name:"दीपावली / छठ पूजा अवकाश", type:"vacation", days:1},
+  {month:10, day:9,  name:"दीपावली / छठ पूजा अवकाश", type:"vacation", days:1},
+  {month:10, day:10, name:"दीपावली / छठ पूजा अवकाश", type:"vacation", days:1},
+  {month:10, day:11, name:"दीपावली / छठ पूजा अवकाश", type:"vacation", days:1},
+  {month:10, day:12, name:"दीपावली / छठ पूजा अवकाश", type:"vacation", days:1},
+  {month:10, day:13, name:"दीपावली / छठ पूजा अवकाश", type:"vacation", days:1},
+  {month:10, day:14, name:"दीपावली / छठ पूजा अवकाश", type:"vacation", days:1},
+  {month:10, day:15, name:"दीपावली / छठ पूजा अवकाश", type:"vacation", days:1},
+  {month:10, day:16, name:"दीपावली / छठ पूजा अवकाश", type:"vacation", days:1},
+  {month:10, day:17, name:"दीपावली / छठ पूजा अवकाश", type:"vacation", days:1},
+  {month:10, day:24, name:"गुरु नानक जयंती / कार्तिक पूर्णिमा", type:"religious", days:1},
+  // दिसम्बर — शीतकालीन अवकाश 25-31 दिसम्बर
+  {month:11, day:25, name:"शीतकालीन अवकाश (क्रिसमस)", type:"vacation", days:1},
+  {month:11, day:26, name:"शीतकालीन अवकाश", type:"vacation", days:1},
+  {month:11, day:27, name:"शीतकालीन अवकाश", type:"vacation", days:1},
+  {month:11, day:28, name:"शीतकालीन अवकाश", type:"vacation", days:1},
+  {month:11, day:29, name:"शीतकालीन अवकाश", type:"vacation", days:1},
+  {month:11, day:30, name:"शीतकालीन अवकाश", type:"vacation", days:1},
+  {month:11, day:31, name:"शीतकालीन अवकाश (नव वर्ष पूर्व)", type:"vacation", days:1},
+];
+
+let calActiveMonth = new Date().getMonth();
+
+function calShowMonth(m, noScroll) {
+  calActiveMonth = m;
+  const today = new Date();
+  const todayD = today.getDate(), todayM = today.getMonth();
+
+  // Update label
+  const label = document.getElementById('calCurrentMonthLabel');
+  if (label) label.textContent = calMonthNames[m] + ' 2026';
+
+  // Get first day and days count
+  const firstDay = new Date(2026, m, 1).getDay();
+  const daysInMonth = new Date(2026, m+1, 0).getDate();
+
+  // Get holidays for this month
+  const monthHols = calHolidays.filter(h => h.month === m);
+
+  // Build calendar grid
+  let daysHTML = '';
+  // Weekday headers
+  let wdHTML = calWeekdays.map((w,i) =>
+    `<div class="cmcard-wd ${i===0?'sun':i===6?'sat':''}">${w}</div>`
+  ).join('');
+
+  // Empty cells
+  for (let i=0; i<firstDay; i++) daysHTML += `<div class="cmcard-day empty"></div>`;
+
+  for (let d=1; d<=daysInMonth; d++) {
+    const dow = new Date(2026,m,d).getDay();
+    const isSun = dow===0, isSat = dow===6;
+    const isToday = (m===todayM && d===todayD && today.getFullYear()===2026);
+    const hol = monthHols.find(h => h.day===d);
+    let cls = 'cmcard-day';
+    if (isSun) cls += ' sunday';
+    if (isSat) cls += ' saturday';
+    if (isToday) cls += ' today';
+    else if (hol) cls += ' holiday-'+hol.type;
+    const dot = hol && !isToday ? '<span class="hday-dot"></span>' : '';
+    daysHTML += `<div class="${cls}" title="${hol?hol.name:''}">${d}${dot}</div>`;
+  }
+
+  const holCount = monthHols.length + (daysInMonth - Array.from({length:daysInMonth},(_,i)=>new Date(2026,m,i+1).getDay()).filter(d=>d!==0&&d!==6).length - (daysInMonth - Array.from({length:daysInMonth},(_,i)=>new Date(2026,m,i+1).getDay()).filter(d=>d!==0&&d!==6).length));
+
+  document.getElementById('calMonthCard').innerHTML = `
+    <div class="cmcard-header" style="background:${calMonthColors[m]};">
+      <div>
+        <div class="cmcard-month-name">${calMonthNames[m]}</div>
+        <div class="cmcard-year">2026</div>
+      </div>
+      <div class="cmcard-holiday-count">🎉 ${monthHols.length} अवकाश</div>
+    </div>
+    <div class="cmcard-weekdays">${wdHTML}</div>
+    <div class="cmcard-days">${daysHTML}</div>
+  `;
+
+  // Holiday list
+  let holListHTML = '';
+  if (monthHols.length === 0) {
+    holListHTML = `<div class="chl-empty">इस माह कोई अवकाश नहीं 🎓</div>`;
+  } else {
+    const typeColors = {national:'#E53935', religious:'#E65100', state:'#1B5E20', vacation:'#4A148C'};
+    holListHTML = monthHols.map(h => {
+      const date = new Date(2026, h.month, h.day);
+      const dateStr = date.toLocaleDateString('hi-IN', {day:'numeric', month:'long', weekday:'long'});
+      return `<div class="chl-item">
+        <span class="chl-dot" style="background:${typeColors[h.type]||'#999'};"></span>
+        <span class="chl-date">${h.day} ${calMonthNames[h.month]}</span>
+        <span class="chl-name">${h.name}</span>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('calHolidayList').innerHTML =
+    `<div class="chl-header">📋 ${calMonthNames[m]} के अवकाश</div>` + holListHTML;
+
+  // Update nav buttons
+  document.querySelectorAll('.cmn-btn').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.getElementById('cmn-'+m);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+    if (!noScroll) activeBtn.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+  }
+}
+
+// Init: mark current month button + show current month (NO scroll)
+// Use setTimeout so page loads at top first, then render calendar silently
+window.addEventListener('DOMContentLoaded', () => {
+  const cur = new Date().getMonth();
+  const curBtn = document.getElementById('cmn-'+cur);
+  if (curBtn) curBtn.classList.add('current');
+  // Render calendar without scrolling
+  calShowMonth(cur, true);
+});
+
+// ===== DOB CALCULATOR =====
+function calcDOB() {
+  const dob = document.getElementById('dobInput').value;
+  const ref = document.getElementById('refInput').value;
+  const result = document.getElementById('dobResult');
+
+  if (!dob) { alert('कृपया जन्म तिथि दर्ज करें'); return; }
+
+  const dobDate = new Date(dob);
+  const refDate = ref ? new Date(ref) : new Date();
+
+  if (dobDate > refDate) { alert('जन्म तिथि, संदर्भ तिथि से बड़ी नहीं हो सकती'); return; }
+
+  let years = refDate.getFullYear() - dobDate.getFullYear();
+  let months = refDate.getMonth() - dobDate.getMonth();
+  let days = refDate.getDate() - dobDate.getDate();
+
+  if (days < 0) {
+    months--;
+    const prevMonth = new Date(refDate.getFullYear(), refDate.getMonth(), 0);
+    days += prevMonth.getDate();
+  }
+  if (months < 0) { years--; months += 12; }
+
+  const totalDays = Math.floor((refDate - dobDate) / (1000 * 60 * 60 * 24));
+  const refStr = refDate.toLocaleDateString('hi-IN', { day:'numeric', month:'long', year:'numeric' });
+
+  // Class suggestion based on age (Bihar RTE norms)
+  // Age calculated as of 1 April of current academic year
+  const academicYear = refDate.getMonth() >= 3 ? refDate.getFullYear() : refDate.getFullYear() - 1;
+  const april1 = new Date(academicYear, 3, 1);
+  let ageOnApril1 = april1.getFullYear() - dobDate.getFullYear();
+  let mDiff = april1.getMonth() - dobDate.getMonth();
+  if (mDiff < 0 || (mDiff === 0 && april1.getDate() < dobDate.getDate())) ageOnApril1--;
+
+  let classInfo = '';
+  let classColor = '#003580';
+  let classEmoji = '📚';
+
+  if (ageOnApril1 < 3) {
+    classInfo = 'विद्यालय प्रवेश की आयु नहीं हुई है।';
+    classColor = '#CC5500';
+    classEmoji = '🍼';
+  } else if (ageOnApril1 === 3 || ageOnApril1 === 4 || ageOnApril1 === 5) {
+    classInfo = 'आँगनबाड़ी / प्री-प्राइमरी (Nursery/KG) में नामांकन उचित है।';
+    classColor = '#138808';
+    classEmoji = '🌱';
+  } else if (ageOnApril1 === 6) {
+    classInfo = 'कक्षा 1 में नामांकन उचित है।';
+    classColor = '#003580';
+    classEmoji = '✏️';
+  } else if (ageOnApril1 === 7) {
+    classInfo = 'कक्षा 2 में नामांकन उचित है।';
+    classColor = '#003580'; classEmoji = '✏️';
+  } else if (ageOnApril1 === 8) {
+    classInfo = 'कक्षा 3 में नामांकन उचित है।';
+    classColor = '#003580'; classEmoji = '✏️';
+  } else if (ageOnApril1 === 9) {
+    classInfo = 'कक्षा 4 में नामांकन उचित है।';
+    classColor = '#003580'; classEmoji = '✏️';
+  } else if (ageOnApril1 === 10) {
+    classInfo = 'कक्षा 5 में नामांकन उचित है।';
+    classColor = '#003580'; classEmoji = '✏️';
+  } else if (ageOnApril1 === 11) {
+    classInfo = 'कक्षा 6 में नामांकन उचित है।';
+    classColor = '#0047AD'; classEmoji = '📖';
+  } else if (ageOnApril1 === 12) {
+    classInfo = 'कक्षा 7 में नामांकन उचित है।';
+    classColor = '#0047AD'; classEmoji = '📖';
+  } else if (ageOnApril1 === 13) {
+    classInfo = 'कक्षा 8 में नामांकन उचित है।';
+    classColor = '#0047AD'; classEmoji = '📖';
+  } else if (ageOnApril1 === 14) {
+    classInfo = 'कक्षा 9 में नामांकन उचित है।';
+    classColor = '#8B6914'; classEmoji = '🎓';
+  } else if (ageOnApril1 === 15) {
+    classInfo = 'कक्षा 10 में नामांकन उचित है।';
+    classColor = '#8B6914'; classEmoji = '🎓';
+  } else if (ageOnApril1 === 16) {
+    classInfo = 'कक्षा 11 में नामांकन उचित है।';
+    classColor = '#CC5500'; classEmoji = '🏫';
+  } else if (ageOnApril1 === 17) {
+    classInfo = 'कक्षा 12 में नामांकन उचित है।';
+    classColor = '#CC5500'; classEmoji = '🏫';
+  } else {
+    classInfo = 'उच्च शिक्षा (College/University) के लिए उपयुक्त आयु।';
+    classColor = '#138808'; classEmoji = '🎓';
+  }
+
+  result.style.display = 'block';
+  result.innerHTML = `
+    <div style="font-size:1.5rem;font-weight:900;color:var(--blue);margin-bottom:8px;">
+      ${years} वर्ष, ${months} माह, ${days} दिन
+    </div>
+    <div style="font-size:0.8rem;color:var(--text-mid);font-weight:500;margin-bottom:12px;">
+      📅 संदर्भ तिथि: ${refStr}<br>
+      📆 कुल दिन: ${totalDays.toLocaleString('en-IN')} दिन
+    </div>
+    <div style="
+      background: linear-gradient(135deg, ${classColor}18, ${classColor}10);
+      border: 2px solid ${classColor}40;
+      border-left: 4px solid ${classColor};
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-align: left;
+    ">
+      <div style="font-size:0.72rem;font-weight:700;color:${classColor};text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">
+        📋 नामांकन सुझाव (1 अप्रैल ${academicYear} के अनुसार)
+      </div>
+      <div style="font-size:1rem;font-weight:800;color:${classColor};">
+        ${classEmoji} ${classInfo}
+      </div>
+      <div style="font-size:0.72rem;color:#777;margin-top:5px;">
+        1 अप्रैल ${academicYear} को आयु: ${ageOnApril1} वर्ष | RTE Act 2009 के अनुसार
+      </div>
+    </div>
+  `;
+}
+
+// Set today's date as default for ref input
+window.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().split('T')[0];
+  const refInput = document.getElementById('refInput');
+  if (refInput) refInput.value = today;
+});
 
 // ===== AI ASSISTANT =====
 const API_SYSTEM_PROMPT = `तुम "School Mitra AI" हो — बिहार के सरकारी विद्यालयों में पढ़ाने वाले शिक्षकों के लिए एक विशेष AI सहायक।

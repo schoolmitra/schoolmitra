@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>सेवानिवृत्ति कैलकुलेटर | बिहार सरकारी शिक्षक</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --saffron: #FF6600;
+    --deep-blue: #003580;
+    --gold: #D4A017;
+    --light-bg: #F0F4FA;
+    --white: #FFFFFF;
+    --green: #1A7A4A;
+    --text-dark: #1A1A2E;
+    --text-mid: #4A5568;
+    --border: #D1D9E0;
+    --shadow: 0 4px 20px rgba(0,53,128,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+    background: var(--light-bg);
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #002060 0%, #003580 60%, #0050A0 100%);
+    color: white;
+    text-align: center;
+    padding: 30px 16px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 5px;
+    background: linear-gradient(90deg, #FF6600 0%, #D4A017 50%, #138808 100%);
+  }
+  header::after {
+    content: '🎓';
+    position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+    font-size: 48px; opacity: 0.08;
+  }
+  .hdr-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    font-size: 11px; letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 16px; border-radius: 20px;
+    margin-bottom: 12px; color: #FFD700;
+  }
+  header h1 {
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    font-size: clamp(22px, 5.5vw, 34px);
+    font-weight: 800; line-height: 1.25;
+  }
+  header .sub {
+    font-size: 13px; color: rgba(255,255,255,0.70);
+    margin-top: 7px; letter-spacing: 0.3px;
+  }
+  .ret-tag {
+    display: inline-block;
+    background: var(--saffron);
+    color: white; font-size: 12px; font-weight: 700;
+    padding: 3px 12px; border-radius: 20px;
+    margin-top: 10px; letter-spacing: 0.5px;
+  }
+
+  /* CONTAINER */
+  .container { max-width: 600px; margin: 0 auto; padding: 24px 14px 50px; }
+
+  /* CARD */
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 24px 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--deep-blue);
+    margin-bottom: 18px; padding-bottom: 11px;
+    border-bottom: 2.5px solid var(--saffron);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* FIELDS */
+  .field { margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+  label {
+    display: block;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-mid); margin-bottom: 7px;
+    font-family: 'Noto Sans Devanagari', sans-serif;
+  }
+  label em { font-style: normal; font-size: 11px; color: #999; font-family: 'Inter', sans-serif; }
+  input[type="date"] {
+    width: 100%; padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px; font-size: 15px;
+    background: #F8FAFC; color: var(--text-dark);
+    transition: border-color 0.2s, background 0.2s;
+    font-family: inherit;
+  }
+  input[type="date"]:focus {
+    outline: none; border-color: var(--deep-blue); background: white;
+    box-shadow: 0 0 0 3px rgba(0,53,128,0.08);
+  }
+
+  /* INFO BOX */
+  .info-box {
+    background: #EEF4FF; border: 1px solid #C5D8F5;
+    border-radius: 10px; padding: 11px 14px;
+    font-size: 12.5px; color: #1A4A8A;
+    display: flex; align-items: flex-start; gap: 8px;
+    margin-top: 16px;
+    font-family: 'Noto Sans Devanagari', sans-serif;
+  }
+  .info-box span { flex-shrink: 0; }
+
+  /* BUTTON */
+  .btn {
+    width: 100%; padding: 15px;
+    background: linear-gradient(135deg, #FF6600, #CC4400);
+    color: white; font-size: 16px; font-weight: 800;
+    border: none; border-radius: 12px; cursor: pointer;
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    box-shadow: 0 5px 16px rgba(255,102,0,0.38);
+    transition: transform 0.15s, box-shadow 0.15s;
+    letter-spacing: 0.3px;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,102,0,0.45); }
+  .btn:active { transform: translateY(0); }
+
+  /* RESULT */
+  #resultSection { display: none; }
+
+  /* RESULT HEADER */
+  .res-hdr {
+    border-radius: 16px; padding: 22px 20px;
+    margin-bottom: 16px; text-align: center;
+    background: linear-gradient(135deg, #002060, #003580);
+    color: white; position: relative; overflow: hidden;
+  }
+  .res-hdr::before {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #FF6600, #D4A017, #138808);
+  }
+  .res-hdr h2 {
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    font-size: 17px; font-weight: 800; margin-bottom: 5px;
+  }
+  .res-hdr .ret-date {
+    font-size: 20px; font-weight: 800;
+    color: #FFD700; margin: 8px 0 4px;
+    font-family: 'Inter', sans-serif;
+  }
+  .res-hdr .ret-day { font-size: 12.5px; opacity: 0.7; }
+
+  /* ALERT */
+  .alert {
+    border-radius: 10px; padding: 13px 15px;
+    font-size: 13.5px; margin-bottom: 14px;
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    line-height: 1.5;
+  }
+  .alert-warn { background: #FFF8E1; border-left: 4px solid #F59E0B; color: #7B4F00; }
+  .alert-info  { background: #E0F2FE; border-left: 4px solid #0284C7; color: #0C4A6E; }
+  .alert-done  { background: #DCFCE7; border-left: 4px solid #16A34A; color: #14532D; }
+
+  /* BRIEFING GRID */
+  .brief-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  @media(max-width: 400px) { .brief-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .bi {
+    background: var(--light-bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 10px; text-align: center;
+  }
+  .bi-num {
+    font-size: 20px; font-weight: 800;
+    color: var(--deep-blue); line-height: 1;
+  }
+  .bi-unit {
+    font-size: 10px; font-weight: 700;
+    color: var(--saffron); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-top: 2px;
+  }
+  .bi-lbl {
+    font-size: 11.5px; color: var(--text-mid);
+    margin-top: 5px; line-height: 1.3;
+    font-family: 'Noto Sans Devanagari', sans-serif;
+  }
+  .bi.highlight { background: #EEF4FF; border-color: #C5D8F5; }
+  .bi.highlight .bi-num { color: var(--green); }
+
+  /* TIMELINE */
+  .tl-row {
+    display: flex; align-items: stretch;
+    margin-bottom: 10px;
+  }
+  .tl-left {
+    display: flex; flex-direction: column;
+    align-items: center; width: 28px; flex-shrink: 0;
+  }
+  .tl-dot {
+    width: 13px; height: 13px; border-radius: 50%;
+    border: 2.5px solid var(--gold); flex-shrink: 0; margin-top: 4px;
+  }
+  .tl-line { width: 2px; background: #E2E8F0; flex: 1; margin: 3px 0; }
+  .tl-body { flex: 1; padding-left: 8px; padding-bottom: 8px; }
+  .tl-lbl { font-size: 11.5px; color: var(--text-mid); font-weight: 500; }
+  .tl-val { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-top: 1px; }
+  .tl-sub { font-size: 11px; color: var(--saffron); font-weight: 600; margin-top: 2px; }
+
+  /* COUNTDOWN */
+  .cd-box {
+    background: linear-gradient(135deg, #0F172A, #1E293B);
+    border-radius: 14px; padding: 20px;
+    text-align: center; margin-bottom: 16px;
+  }
+  .cd-box h3 {
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    font-size: 13px; color: rgba(255,255,255,0.6);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;
+  }
+  .cd-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .cd-item {
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.13);
+    border-radius: 10px; padding: 12px 16px; min-width: 72px;
+  }
+  .cd-num { font-size: 28px; font-weight: 800; color: #FFD700; line-height: 1; }
+  .cd-lbl { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 4px; }
+
+  /* PROGRESS */
+  .pg-wrap { background: var(--white); border-radius: 14px; padding: 18px 18px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 16px; }
+  .pg-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .pg-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--deep-blue); }
+  .pg-pct { font-size: 18px; font-weight: 800; color: var(--saffron); }
+  .pg-track { height: 12px; background: #E5E9EE; border-radius: 10px; overflow: hidden; }
+  .pg-fill { height: 100%; background: linear-gradient(90deg, var(--deep-blue), var(--saffron)); border-radius: 10px; transition: width 1s ease; }
+  .pg-note { font-size: 11px; color: var(--text-mid); margin-top: 8px; text-align: center; font-family: 'Noto Sans Devanagari', sans-serif; }
+
+  /* RESET */
+  .btn-reset {
+    width: 100%; padding: 12px;
+    background: transparent; border: 2px solid var(--deep-blue);
+    color: var(--deep-blue); border-radius: 10px;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-reset:hover { background: var(--deep-blue); color: white; }
+
+  .footer-note {
+    text-align: center; font-size: 11.5px; color: #999;
+    margin-top: 20px; line-height: 1.7;
+    font-family: 'Noto Sans Devanagari', sans-serif;
+  }
+</style>
+</head>
+<body>
+<div style="position:fixed;top:16px;left:16px;z-index:9999;">
+  <a href="https://schoolmitra.github.io/schoolmitra/" style="display:inline-flex;align-items:center;gap:8px;background:#003580;color:white;text-decoration:none;font-family:Arial,sans-serif;font-size:0.88rem;font-weight:700;padding:10px 18px;border-radius:50px;box-shadow:0 4px 20px rgba(0,53,128,0.45);border:2px solid rgba(255,255,255,0.2);"
+  onmouseover="this.style.background='#FF6B00'" onmouseout="this.style.background='#003580'">← होम पर वापस जाएं</a>
+</div>
+
+<header>
+  <div class="hdr-badge">🏫 Bihar Govt. Teacher</div>
+  <h1>सेवानिवृत्ति कैलकुलेटर</h1>
+  <div class="sub">बिहार सरकारी शिक्षक हेतु | Retirement Calculator</div>
+  <div class="ret-tag" id="retAgeTag">🎓 सेवानिवृत्ति आयु: 60 वर्ष</div>
+</header>
+
+<div class="container">
+
+  <!-- INPUT CARD -->
+  <div class="card">
+    <div class="card-title">📅 जानकारी दर्ज करें</div>
+
+    <div class="field">
+      <label>जन्म तिथि <em>/ Date of Birth</em></label>
+      <input type="date" id="dob" />
+    </div>
+
+    <div class="field">
+      <label>सेवा प्रारंभ तिथि <em>/ Date of Joining</em></label>
+      <input type="date" id="doi" />
+    </div>
+
+    <div class="field">
+      <label>सेवानिवृत्ति आयु <em>/ Retirement Age</em></label>
+      <select id="retAge" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;background:#F8FAFC;color:var(--text-dark);font-family:inherit;">
+        <option value="60" selected>60 वर्ष — Bihar Govt. Teacher (वर्तमान नियम)</option>
+        <option value="62">62 वर्ष — University / College</option>
+        <option value="65">65 वर्ष — Judiciary / Special Post</option>
+      </select>
+    </div>
+
+    <div class="info-box">
+      <span>ℹ️</span>
+      <div>बिहार सरकार के नियमानुसार शिक्षकों की सेवानिवृत्ति <b>60 वर्ष</b> की आयु में जन्म माह के <b>अंतिम दिन</b> होती है।</div>
+    </div>
+  </div>
+
+  <button class="btn" onclick="calculate()">📊 सेवानिवृत्ति गणना करें</button>
+
+  <!-- RESULT -->
+  <div id="resultSection" style="margin-top:20px;">
+
+    <!-- RETIREMENT DATE HEADER -->
+    <div class="res-hdr">
+      <h2>🎯 आपकी सेवानिवृत्ति तिथि</h2>
+      <div class="ret-date" id="r-date">—</div>
+      <div class="ret-day" id="r-day">—</div>
+    </div>
+
+    <!-- ALERT -->
+    <div id="alertBox"></div>
+
+    <!-- BRIEFING GRID -->
+    <div class="card">
+      <div class="card-title">📊 सेवा अवधि विवरण (Briefing)</div>
+      <div class="brief-grid" id="briefGrid"></div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="card">
+      <div class="card-title">🗓️ सेवा कालक्रम (Timeline)</div>
+      <div id="tlContent"></div>
+    </div>
+
+    <!-- COUNTDOWN -->
+    <div class="cd-box">
+      <h3 id="cdTitle">⏳ सेवानिवृत्ति में शेष समय</h3>
+      <div class="cd-row" id="cdRow"></div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="pg-wrap">
+      <div class="pg-top">
+        <div class="pg-title">📈 सेवा प्रगति</div>
+        <div class="pg-pct" id="pgPct">0%</div>
+      </div>
+      <div class="pg-track"><div class="pg-fill" id="pgFill" style="width:0%"></div></div>
+      <div class="pg-note" id="pgNote"></div>
+    </div>
+
+    <button class="btn-reset" onclick="resetForm()">🔄 नई गणना करें</button>
+
+    <div class="footer-note">
+      ⚠️ यह कैलकुलेटर सामान्य जानकारी हेतु है।<br>
+      आधिकारिक पुष्टि के लिए अपने विद्यालय / विभाग से संपर्क करें।
+    </div>
+  </div>
+
+</div>
+
+<script>
+function calculate() {
+  const dobVal = document.getElementById('dob').value;
+  const doiVal = document.getElementById('doi').value;
+  const RET_AGE = parseInt(document.getElementById('retAge').value);
+
+  if (!dobVal || !doiVal) {
+    alert('कृपया जन्म तिथि और सेवा प्रारंभ तिथि दोनों दर्ज करें।');
+    return;
+  }
+
+  const dob = new Date(dobVal);
+  const doi = new Date(doiVal);
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  if (dob >= today) { alert('जन्म तिथि भविष्य में नहीं हो सकती।'); return; }
+  if (doi < dob)    { alert('सेवा प्रारंभ तिथि जन्म तिथि से पहले नहीं हो सकती।'); return; }
+
+  // Bihar Rule: last day of birth month after completing 60 years
+  const retDate = new Date(dob.getFullYear() + RET_AGE, dob.getMonth() + 1, 0);
+  retDate.setHours(0,0,0,0);
+
+  const already = retDate <= today;
+
+  // Diffs
+  const curAge    = diffYMD(dob, today);
+  const svcDone   = diffYMD(doi, today);
+  const totalSvc  = diffYMD(doi, retDate);
+  const remaining = already ? {years:0,months:0,days:0} : diffYMD(today, retDate);
+
+  const daysLeft      = Math.max(0, Math.floor((retDate - today) / 86400000));
+  const daysDone      = Math.max(0, Math.floor((today - doi) / 86400000));
+  const totalSvcDays  = Math.max(1, Math.floor((retDate - doi) / 86400000));
+  const pct           = Math.min(100, Math.max(0, Math.round((daysDone / totalSvcDays) * 100)));
+
+  // RETIREMENT DATE HEADER
+  document.getElementById('r-date').textContent = fmt(retDate);
+  document.getElementById('r-day').textContent =
+    retDate.toLocaleDateString('hi-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('retAgeTag').textContent = `🎓 सेवानिवृत्ति आयु: ${RET_AGE} वर्ष`;
+
+  // ALERT
+  let alertHtml = '';
+  if (already) {
+    alertHtml = `<div class="alert alert-done">✅ आप <b>${fmt(retDate)}</b> को सेवानिवृत्त हो चुके हैं। कुल सेवा: <b>${totalSvc.years} वर्ष ${totalSvc.months} माह ${totalSvc.days} दिन</b>।</div>`;
+  } else if (daysLeft <= 365) {
+    alertHtml = `<div class="alert alert-warn">⚠️ आपकी सेवानिवृत्ति अब <b>1 वर्ष से कम</b> में है! <b>${fmt(retDate)}</b> को सेवानिवृत्त होंगे।</div>`;
+  } else {
+    alertHtml = `<div class="alert alert-info">ℹ️ आपकी सेवानिवृत्ति तिथि: <b>${fmt(retDate)}</b> — अभी <b>${remaining.years} वर्ष ${remaining.months} माह</b> शेष हैं।</div>`;
+  }
+  document.getElementById('alertBox').innerHTML = alertHtml;
+
+  // BRIEFING GRID
+  const briefs = [
+    { num: `${curAge.years}`, unit: 'वर्ष', lbl: 'वर्तमान आयु', hi: false },
+    { num: `${svcDone.years}Y ${svcDone.months}M`, unit: 'पूर्ण', lbl: 'सेवा पूर्ण', hi: false },
+    { num: already ? '—' : `${remaining.years}Y ${remaining.months}M`, unit: already ? '' : 'शेष', lbl: 'शेष सेवा', hi: true },
+    { num: `${totalSvc.years}Y ${totalSvc.months}M`, unit: 'कुल', lbl: 'कुल सेवा', hi: false },
+    { num: daysDone.toLocaleString('en-IN'), unit: 'दिन', lbl: 'सेवा दिन (पूर्ण)', hi: false },
+    { num: daysLeft.toLocaleString('en-IN'), unit: 'दिन', lbl: 'शेष दिन', hi: true },
+  ];
+  document.getElementById('briefGrid').innerHTML = briefs.map(b => `
+    <div class="bi${b.hi ? ' highlight' : ''}">
+      <div class="bi-num">${b.num}</div>
+      <div class="bi-unit">${b.unit}</div>
+      <div class="bi-lbl">${b.lbl}</div>
+    </div>`).join('');
+
+  // TIMELINE
+  const tl = [
+    { lbl: 'जन्म तिथि / Date of Birth', val: fmt(dob), sub: `आयु: ${curAge.years} वर्ष ${curAge.months} माह`, color: '#003580' },
+    { lbl: 'सेवा प्रारंभ / Date of Joining', val: fmt(doi), sub: `सेवा पूर्ण: ${svcDone.years} वर्ष ${svcDone.months} माह`, color: '#D4A017' },
+    { lbl: 'आज / Today', val: fmt(today), sub: `शेष: ${remaining.years} वर्ष ${remaining.months} माह ${remaining.days} दिन`, color: '#FF6600' },
+    { lbl: 'सेवानिवृत्ति / Retirement', val: fmt(retDate), sub: `${retDate.toLocaleDateString('hi-IN',{weekday:'long'})} — कुल सेवा ${totalSvc.years} वर्ष ${totalSvc.months} माह`, color: '#1A7A4A' },
+  ];
+  document.getElementById('tlContent').innerHTML = tl.map((item, i) => `
+    <div class="tl-row">
+      <div class="tl-left">
+        <div class="tl-dot" style="background:${item.color}; border-color:${item.color};"></div>
+        ${i < tl.length-1 ? '<div class="tl-line"></div>' : ''}
+      </div>
+      <div class="tl-body">
+        <div class="tl-lbl">${item.lbl}</div>
+        <div class="tl-val">${item.val}</div>
+        <div class="tl-sub">${item.sub}</div>
+      </div>
+    </div>`).join('');
+
+  // COUNTDOWN
+  document.getElementById('cdTitle').textContent = already ? '✅ कुल सेवा अवधि' : '⏳ सेवानिवृत्ति में शेष समय';
+  const cdData = already
+    ? [{n: totalSvc.years, l:'वर्ष'},{n: totalSvc.months, l:'माह'},{n: totalSvc.days, l:'दिन'},{n: totalSvcDays.toLocaleString('en-IN'), l:'कुल दिन'}]
+    : [{n: remaining.years, l:'वर्ष'},{n: remaining.months, l:'माह'},{n: remaining.days, l:'दिन'},{n: daysLeft.toLocaleString('en-IN'), l:'कुल दिन'}];
+  document.getElementById('cdRow').innerHTML = cdData.map(c =>
+    `<div class="cd-item"><div class="cd-num">${c.n}</div><div class="cd-lbl">${c.l}</div></div>`).join('');
+
+  // PROGRESS
+  document.getElementById('pgPct').textContent = pct + '%';
+  document.getElementById('pgFill').style.width = pct + '%';
+  document.getElementById('pgNote').textContent =
+    `${daysDone.toLocaleString('en-IN')} दिन पूर्ण  |  ${daysLeft.toLocaleString('en-IN')} दिन शेष  |  कुल ${totalSvcDays.toLocaleString('en-IN')} दिन`;
+
+  document.getElementById('resultSection').style.display = 'block';
+  setTimeout(() => document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' }), 50);
+}
+
+function diffYMD(from, to) {
+  let y = to.getFullYear() - from.getFullYear();
+  let m = to.getMonth() - from.getMonth();
+  let d = to.getDate() - from.getDate();
+  if (d < 0) { m--; d += new Date(to.getFullYear(), to.getMonth(), 0).getDate(); }
+  if (m < 0) { y--; m += 12; }
+  return { years: Math.max(0,y), months: Math.max(0,m), days: Math.max(0,d) };
+}
+
+function fmt(d) {
+  return d.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+function resetForm() {
+  document.getElementById('resultSection').style.display = 'none';
+  document.getElementById('dob').value = '';
+  document.getElementById('doi').value = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const t = new Date().toISOString().split('T')[0];
+  document.getElementById('dob').setAttribute('max', t);
+  document.getElementById('doi').setAttribute('max', t);
+});
+</script>
+
+</body>
+</html>

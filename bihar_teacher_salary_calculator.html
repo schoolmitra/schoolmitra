@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>बिहार शिक्षक वेतन कैलकुलेटर</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    :root {
+      --saffron:   #FF6B1A;
+      --saffron-lt:#FFF0E8;
+      --blue:      #1B4FBB;
+      --blue-lt:   #E8EFFF;
+      --green:     #158A45;
+      --green-lt:  #E6F5ED;
+      --gold:      #E09600;
+      --gold-lt:   #FFF8E1;
+      --purple:    #6D28D9;
+      --purple-lt: #EDE9FE;
+      --red:       #DC2626;
+      --bg:        #F2F4FA;
+      --white:     #FFFFFF;
+      --text:      #1A1A2E;
+      --muted:     #64748B;
+      --radius:    14px;
+      --shadow:    0 4px 20px rgba(27,79,187,0.10);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      padding: 12px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: linear-gradient(135deg, #FF6B1A 0%, #E05A00 40%, #1B4FBB 100%);
+      border-radius: var(--radius);
+      padding: 20px 18px 18px;
+      text-align: center;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 110px; height: 110px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -20px; left: -20px;
+      width: 80px; height: 80px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    .header h1 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.3;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .header p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+      margin-top: 4px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--blue-lt);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-title .dot {
+      width: 8px; height: 8px;
+      background: var(--saffron);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* ── INPUT GRID ── */
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .input-group { display: flex; flex-direction: column; gap: 4px; }
+    .input-group label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .input-group input {
+      border: 1.5px solid #DDE3F0;
+      border-radius: 9px;
+      padding: 9px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      background: #FAFBFF;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(27,79,187,0.12);
+      background: #fff;
+    }
+    .rupee-wrap { position: relative; }
+    .rupee-wrap::before {
+      content: '₹';
+      position: absolute;
+      left: 10px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .rupee-wrap input { padding-left: 22px; }
+    .percent-wrap { position: relative; }
+    .percent-wrap::after {
+      content: '%';
+      position: absolute;
+      right: 10px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn:active { transform: scale(0.97); opacity: 0.85; }
+    .btn-calc  { background: linear-gradient(135deg,#158A45,#0D6B35); color:#fff; }
+    .btn-reset { background: linear-gradient(135deg,#DC2626,#B91C1C); color:#fff; }
+    .btn-pdf   { background: linear-gradient(135deg,#1B4FBB,#1438A0); color:#fff; }
+    .btn-print { background: linear-gradient(135deg,#FF6B1A,#D95A10); color:#fff; }
+
+    /* ── RESULTS ── */
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 11px;
+      margin-bottom: 14px;
+    }
+    .res-card {
+      border-radius: 12px;
+      padding: 13px 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .res-card::after {
+      content: '';
+      position: absolute;
+      bottom: -12px; right: -12px;
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      opacity: 0.15;
+    }
+    .res-card h4 {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      margin-bottom: 5px;
+    }
+    .res-card .amount {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .res-card .rupee-sym { font-size: 13px; font-weight: 600; }
+
+    .rc-blue    { background: var(--blue-lt);   color: var(--blue);   }
+    .rc-blue::after   { background: var(--blue); }
+    .rc-saffron { background: var(--saffron-lt); color: var(--saffron); }
+    .rc-saffron::after { background: var(--saffron); }
+    .rc-green   { background: var(--green-lt);  color: var(--green);  }
+    .rc-green::after  { background: var(--green); }
+    .rc-gold    { background: var(--gold-lt);   color: var(--gold);   }
+    .rc-gold::after   { background: var(--gold); }
+    .rc-purple  { background: var(--purple-lt); color: var(--purple); }
+    .rc-purple::after { background: var(--purple); }
+    .rc-red     { background: #FEE2E2;          color: var(--red);    }
+    .rc-red::after    { background: var(--red); }
+
+    /* ── NET SALARY BOX ── */
+    .net-box {
+      background: linear-gradient(135deg, #1B4FBB 0%, #0D2E7A 60%, #158A45 100%);
+      border-radius: 14px;
+      padding: 20px 18px;
+      text-align: center;
+      color: #fff;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .net-box::before {
+      content: '';
+      position: absolute;
+      top: -25px; right: -25px;
+      width: 90px; height: 90px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 50%;
+    }
+    .net-box .label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-bottom: 6px;
+    }
+    .net-box .net-amt {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+    .net-box .annual-note {
+      font-size: 12px;
+      opacity: 0.75;
+      margin-top: 6px;
+    }
+
+    /* ── NPS SECTION ── */
+    .nps-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    .nps-card {
+      border-radius: 11px;
+      padding: 12px 10px;
+      text-align: center;
+    }
+    .nps-card h5 { font-size: 10px; font-weight: 600; margin-bottom: 4px; }
+    .nps-card .namt { font-size: 15px; font-weight: 800; }
+    .nps-emp   { background: #EDE9FE; color: #6D28D9; }
+    .nps-govt  { background: #E6F5ED; color: #158A45; }
+    .nps-total { background: #FFF8E1; color: #B45309; }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      font-size: 10.5px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* ── PRINT STYLES ── */
+    @media print {
+      body { background: #fff; padding: 0; }
+      .btn-row, .header { display: none; }
+      .card, .net-box, .nps-row { box-shadow: none; }
+    }
+
+    /* ── MOBILE TWEAKS ── */
+    @media (max-width: 380px) {
+      .input-grid { grid-template-columns: 1fr; }
+      .results-grid { grid-template-columns: 1fr; }
+      .nps-row { grid-template-columns: 1fr; }
+      .net-box .net-amt { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="header-badge">BPSC TEACHER TOOL</div>
+  <h1>🏫 बिहार शिक्षक वेतन कैलकुलेटर</h1>
+  <p>Bihar Teacher Salary Calculator · 7th Pay Commission</p>
+</div>
+
+<!-- ══ INPUT CARD ══ -->
+<div class="card">
+  <div class="card-title"><span class="dot"></span> वेतन विवरण भरें</div>
+  <div class="input-grid">
+
+    <div class="input-group">
+      <label>Basic Pay (मूल वेतन)</label>
+      <div class="rupee-wrap">
+        <input type="number" id="basic" value="25000" min="0">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>DA (महंगाई भत्ता %)</label>
+      <div class="percent-wrap">
+        <input type="number" id="da" value="60" min="0" max="200">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>HRA (मकान किराया %)</label>
+      <div class="percent-wrap">
+        <input type="number" id="hra" value="10" min="0" max="100">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Transport Allowance</label>
+      <div class="rupee-wrap">
+        <input type="number" id="ta" value="0" min="0">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Medical Allowance</label>
+      <div class="rupee-wrap">
+        <input type="number" id="medical" value="1000" min="0">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>GIS Deduction</label>
+      <div class="rupee-wrap">
+        <input type="number" id="gis" value="30" min="0">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Other Deduction (अन्य)</label>
+      <div class="rupee-wrap">
+        <input type="number" id="other" value="0" min="0">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Other Allowance (अन्य भत्ता)</label>
+      <div class="rupee-wrap">
+        <input type="number" id="otherallow" value="0" min="0">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Buttons -->
+  <div class="btn-row" style="margin-top:16px;">
+    <button class="btn btn-calc"  onclick="calc()">✅ Calculate</button>
+    <button class="btn btn-reset" onclick="resetAll()">🔄 Reset</button>
+    <button class="btn btn-pdf"   onclick="getPDF()">📄 PDF</button>
+    <button class="btn btn-print" onclick="window.print()">🖨️ Print</button>
+  </div>
+</div>
+
+<!-- ══ RESULTS ══ -->
+<div id="salarySlip">
+
+  <!-- Net Salary Hero -->
+  <div class="net-box">
+    <div class="label">🤚 NET IN-HAND SALARY (मासिक)</div>
+    <div class="net-amt">₹ <span id="net">0</span></div>
+    <div class="annual-note">वार्षिक: ₹ <span id="annual">0</span></div>
+  </div>
+
+  <!-- 6 Result Cards -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> वेतन विश्लेषण</div>
+    <div class="results-grid">
+
+      <div class="res-card rc-saffron">
+        <h4>DA Amount (महंगाई भत्ता)</h4>
+        <div class="amount"><span class="rupee-sym">₹</span> <span id="daAmt">0</span></div>
+      </div>
+
+      <div class="res-card rc-blue">
+        <h4>HRA Amount (मकान किराया)</h4>
+        <div class="amount"><span class="rupee-sym">₹</span> <span id="hraAmt">0</span></div>
+      </div>
+
+      <div class="res-card rc-green">
+        <h4>Gross Salary (कुल वेतन)</h4>
+        <div class="amount"><span class="rupee-sym">₹</span> <span id="gross">0</span></div>
+      </div>
+
+      <div class="res-card rc-red">
+        <h4>Total Deduction (कुल कटौती)</h4>
+        <div class="amount"><span class="rupee-sym">₹</span> <span id="deduction">0</span></div>
+      </div>
+
+      <div class="res-card rc-purple">
+        <h4>NPS Employee (10%)</h4>
+        <div class="amount"><span class="rupee-sym">₹</span> <span id="nps">0</span></div>
+      </div>
+
+      <div class="res-card rc-gold">
+        <h4>Annual Salary (वार्षिक)</h4>
+        <div class="amount"><span class="rupee-sym">₹</span> <span id="annual2">0</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- NPS Section -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> NPS योगदान विवरण</div>
+    <div class="nps-row">
+      <div class="nps-card nps-emp">
+        <h5>कर्मचारी NPS (10%)</h5>
+        <div class="namt">₹ <span id="nps2">0</span></div>
+      </div>
+      <div class="nps-card nps-govt">
+        <h5>सरकारी योगदान (14%)</h5>
+        <div class="namt">₹ <span id="employerNps">0</span></div>
+      </div>
+      <div class="nps-card nps-total">
+        <h5>कुल NPS (24%)</h5>
+        <div class="namt">₹ <span id="totalNps">0</span></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end salarySlip -->
+
+<div class="footer">
+  बिहार शिक्षक वेतन कैलकुलेटर · BPSC Teacher Tool · School Mitra<br>
+  <small>* यह केवल अनुमानित गणना है। वास्तविक वेतन भिन्न हो सकता है।</small>
+</div>
+
+<script>
+  const fmt = n => Number(n).toLocaleString('en-IN');
+
+  function calc() {
+    const basic      = +document.getElementById("basic").value      || 0;
+    const da         = +document.getElementById("da").value         || 0;
+    const hra        = +document.getElementById("hra").value        || 0;
+    const ta         = +document.getElementById("ta").value         || 0;
+    const medical    = +document.getElementById("medical").value    || 0;
+    const gis        = +document.getElementById("gis").value        || 0;
+    const other      = +document.getElementById("other").value      || 0;
+    const otherallow = +document.getElementById("otherallow").value || 0;
+
+    const daAmt    = Math.round(basic * da / 100);
+    const hraAmt   = Math.round(basic * hra / 100);
+    const gross    = Math.round(basic + daAmt + hraAmt + ta + medical + otherallow);
+    const nps      = Math.round((basic + daAmt) * 10 / 100);
+    const deduction = Math.round(nps + gis + other);
+    const net      = Math.round(gross - deduction);
+    const annual   = Math.round(net * 12);
+    const empNps   = Math.round((basic + daAmt) * 14 / 100);
+    const totalNps = nps + empNps;
+
+    document.getElementById("daAmt").textContent      = fmt(daAmt);
+    document.getElementById("hraAmt").textContent     = fmt(hraAmt);
+    document.getElementById("gross").textContent      = fmt(gross);
+    document.getElementById("nps").textContent        = fmt(nps);
+    document.getElementById("nps2").textContent       = fmt(nps);
+    document.getElementById("deduction").textContent  = fmt(deduction);
+    document.getElementById("net").textContent        = fmt(net);
+    document.getElementById("annual").textContent     = fmt(annual);
+    document.getElementById("annual2").textContent    = fmt(annual);
+    document.getElementById("employerNps").textContent= fmt(empNps);
+    document.getElementById("totalNps").textContent   = fmt(totalNps);
+  }
+
+  function resetAll() {
+    document.getElementById("basic").value      = 25000;
+    document.getElementById("da").value         = 60;
+    document.getElementById("hra").value        = 10;
+    document.getElementById("ta").value         = 0;
+    document.getElementById("medical").value    = 1000;
+    document.getElementById("gis").value        = 30;
+    document.getElementById("other").value      = 0;
+    document.getElementById("otherallow").value = 0;
+    calc();
+  }
+
+  function getPDF() {
+    html2pdf()
+      .set({
+        margin: 8,
+        filename: "Bihar_Teacher_Salary.pdf",
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      })
+      .from(document.getElementById("salarySlip"))
+      .save();
+  }
+
+  // Live calculation on any input change
+  document.querySelectorAll("input").forEach(i => i.addEventListener("input", calc));
+  window.onload = calc;
+</script>
+<div style="position:fixed;top:16px;left:16px;z-index:9999;">
+  <a href="https://schoolmitra.github.io/schoolmitra/" style="display:inline-flex;align-items:center;gap:8px;background:#003580;color:white;text-decoration:none;font-family:Arial,sans-serif;font-size:0.88rem;font-weight:700;padding:10px 18px;border-radius:50px;box-shadow:0 4px 20px rgba(0,53,128,0.5);border:2px solid rgba(255,255,255,0.2);"
+  onmouseover="this.style.background='#FF6B00'" onmouseout="this.style.background='#003580'">🏠 होम</a>
+</div>
+</body>
+</html>

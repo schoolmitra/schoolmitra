@@ -2064,6 +2064,20 @@ body {
       <div class="tool-badge" style="background:#FCE4EC;color:#AD1457;">School Mitra Tool</div>
     </a>
 
+    <!-- Salary Calculator -->
+    <a class="tool-card tool-link" href="bihar_teacher_salary_calculator.html" target="_blank">
+      <div class="tool-header">
+        <div class="tool-icon" style="background:linear-gradient(135deg,#1565C0,#0D47A1);color:white;font-size:1.4rem;">💰</div>
+        <div>
+          <div class="tool-name">वेतन कैलकुलेटर</div>
+          <div class="tool-sub">Bihar Teacher Salary</div>
+        </div>
+        <div class="tool-ext-arrow">↗</div>
+      </div>
+      <div class="tool-desc">बिहार के शिक्षकों का मासिक वेतन, DA, HRA, GPF कटौती सहित पूरा वेतन विवरण तैयार करें।</div>
+      <div class="tool-badge" style="background:#E3F2FD;color:#1565C0;">School Mitra Tool</div>
+    </a>
+
   </div>
 </div>
 
@@ -2151,6 +2165,7 @@ const qpopupContent = {
       <a class="qp-link" href="https://pdf.pi7.org/resize-pdf" target="_blank"><div class="qp-link-icon">📄</div><div><div class="qp-link-name">PDF Resizer</div><div class="qp-link-desc">pdf.pi7.org</div></div><div class="qp-link-arr">↗</div></a>
       <a class="qp-link" href="retirement_calculator.html" target="_blank"><div class="qp-link-icon" style="background:linear-gradient(135deg,#1B5E20,#388E3C);color:white;">🎯</div><div><div class="qp-link-name">सेवानिवृत्ति कैलकुलेटर</div><div class="qp-link-desc">Retirement date & pension</div></div><div class="qp-link-arr">↗</div></a>
       <a class="qp-link" href="Absentee_statement.html" target="_blank"><div class="qp-link-icon" style="background:linear-gradient(135deg,#AD1457,#C2185B);color:white;">📊</div><div><div class="qp-link-name">Absentee Statement</div><div class="qp-link-desc">अनुपस्थिति विवरण पत्र</div></div><div class="qp-link-arr">↗</div></a>
+      <a class="qp-link" href="bihar_teacher_salary_calculator.html" target="_blank"><div class="qp-link-icon" style="background:linear-gradient(135deg,#1565C0,#0D47A1);color:white;">💰</div><div><div class="qp-link-name">वेतन कैलकुलेटर</div><div class="qp-link-desc">Bihar Teacher Salary</div></div><div class="qp-link-arr">↗</div></a>
     </div>`
   },
   assistant: {
@@ -2814,8 +2829,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // ===== AI ASSISTANT (Gemini) =====
-const GEMINI_API_KEY = 'AQ.Ab8RN6IwHHVq9ELHsDTSP3YiZ9adyVUkIlmtsKOzulMLnBWMPw';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_URL = 'https://school-mitra-ai.ums-garhwa-katouna.workers.dev';
 
 const SYSTEM_PROMPT = `तुम "School Mitra AI" हो — बिहार के सरकारी विद्यालयों में पढ़ाने वाले शिक्षकों के लिए एक विशेष AI सहायक।
 
@@ -2867,8 +2881,7 @@ async function sendMessage() {
         contents: contents,
         generationConfig: {
           temperature: 0.7,
-          maxOutputTokens: 800,
-          responseMimeType: "text/plain"
+          maxOutputTokens: 800
         }
       })
     });

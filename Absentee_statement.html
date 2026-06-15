@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Absentee Statement - Bihar School</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Times New Roman", Times, serif; font-size: 10pt; background: #e0e0e0; color: #000; }
+  .screen-wrapper { max-width: 1200px; margin: 20px auto; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+
+  .print-bar { background: #1a1a2e; padding: 8px 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .print-bar a, .print-bar button {
+    background: #fff; color: #1a1a2e; border: none; padding: 6px 14px;
+    font-size: 12px; font-weight: bold; cursor: pointer; border-radius: 3px; text-decoration: none; display:inline-block;
+  }
+  .print-bar button:hover, .print-bar a:hover { background: #ddd; }
+  .print-bar .add-btn { background: #4caf50; color: #fff; }
+  .print-bar .add-btn:hover { background: #388e3c; }
+  .print-bar span { color: #ccc; font-size: 11px; }
+
+  .page { padding: 8mm 10mm; background: #fff; width: 277mm; margin: 0 auto; }
+
+  .doc-title { text-align: center; font-size: 13pt; font-weight: bold; text-decoration: underline; margin-bottom: 3px; }
+
+  .subtitle-row { text-align: center; margin-bottom: 5px; font-size: 11pt; font-weight: bold; }
+  .subtitle-row select {
+    font-family: "Times New Roman", Times, serif; font-size: 11pt; font-weight: bold;
+    border: none; border-bottom: 2px solid #1a1a2e; background: #e8f4ff; color: #1a1a2e;
+    padding: 1px 6px; cursor: pointer; outline: none; border-radius: 3px;
+  }
+  .subtitle-row select:focus { background: #fff3b0; }
+
+  .header-info { margin-bottom: 5px; font-size: 9pt; }
+  .header-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 2px; align-items: baseline; }
+  .field-block { display: flex; align-items: baseline; gap: 3px; }
+  .lbl { font-weight: bold; white-space: nowrap; }
+  .ifield { display: inline-block; border-bottom: 1px solid #555; padding: 0 2px; }
+  .ifield input {
+    min-width: 40px; background: transparent;
+    font-family: "Times New Roman", Times, serif; font-size: 9pt; border: none; outline: none;
+  }
+
+  input[type="text"], input[type="number"], input[type="date"], textarea {
+    width: 100%; border: none; outline: none;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 8pt; background: transparent;
+    resize: none; overflow: hidden; padding: 0;
+    text-align: center;
+  }
+  textarea { min-height: 16px; text-align: center; }
+
+  input.nilable, textarea.nilable { background: #e8f4ff; border-radius: 2px; padding: 1px 2px; }
+  input.nilable:focus, textarea.nilable:focus { background: #fff3b0; outline: 1px solid #f0a000; }
+
+  /* Date range - two line: date1 "से —" / date2 "तक" */
+  .date-range {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 1px; width: 100%; text-align: center;
+  }
+  .date-row {
+    display: flex; flex-direction: row; align-items: center;
+    justify-content: center; gap: 2px; width: 100%; text-align: center;
+  }
+  .date-range input[type="date"] {
+    flex: 1; min-width: 0; width: auto;
+    font-size: 7pt; background: #e8f4ff;
+    border: 1px solid #bbb; border-radius: 2px; padding: 1px 1px;
+    cursor: pointer; text-align: center;
+  }
+  .date-range input[type="date"]:focus { background: #fff3b0; border-color: #f0a000; outline: none; }
+  .date-range .sep { font-size: 7pt; color: #333; white-space: nowrap; font-weight: bold; flex-shrink: 0; }
+
+  /* Bank+IFSC stacked */
+  .bank-cell { display: flex; flex-direction: column; gap: 2px; align-items: center; width: 100%; }
+  .bank-cell input[type="text"] { text-align: center; width: 100%; font-size: 8pt; }
+  .bank-divider { width: 90%; border: none; border-top: 1px solid #aaa; margin: 1px 0; }
+  .ifsc-text {
+    text-align: center; width: 100%;
+    font-size: 8pt; letter-spacing: 1px; font-weight: bold; text-transform: uppercase;
+  }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; margin-bottom: 4px; font-size: 8pt; table-layout: fixed; }
+  th, td { border: 1px solid #000; padding: 2px 3px; vertical-align: middle; word-wrap: break-word; }
+  th { background: #f2f2f2; font-weight: bold; text-align: center; font-size: 7.5pt; line-height: 1.3; }
+  td { text-align: center; }
+  td.sr-td { text-align: center; font-weight: bold; }
+  .leave-hd { background: #dce8f5 !important; }
+
+  .del-btn-cell { width: 20px !important; padding: 1px; }
+  .del-btn { background: #e53935; color: #fff; border: none; border-radius: 2px;
+    font-size: 9px; cursor: pointer; padding: 1px 3px; line-height: 1; }
+  .del-btn:hover { background: #b71c1c; }
+
+  .certification-box { font-size: 8pt; line-height: 1.7; margin-top: 5px; }
+  .sign-block { margin-top: 10px; display: flex; justify-content: space-between; }
+  .sign-block .left, .sign-block .right { width: 48%; font-size: 9pt; line-height: 1.9; }
+  .sign-block .right { text-align: right; }
+
+  /* ══ PRINT ══ */
+  @media print {
+    @page { size: A4 landscape; margin: 6mm 8mm; }
+    body { background: #fff; font-size: 8pt; }
+    .screen-wrapper { box-shadow: none; max-width: 100%; margin: 0; }
+    .print-bar { display: none !important; }
+    .del-btn-cell { display: none !important; }
+    .page { width: 100%; padding: 0; margin: 0; }
+
+    /* Remove all colour/border from inputs */
+    input[type="text"], input[type="number"], textarea {
+      background: transparent !important;
+      outline: none !important; border-radius: 0 !important;
+      border: none !important;
+    }
+    /* Placeholder text hide in print */
+    input[type="text"]::placeholder,
+    input[type="number"]::placeholder,
+    textarea::placeholder { color: transparent !important; }
+
+    .ifield { border-bottom: 1px solid #000 !important; background: transparent !important; }
+    .bank-divider { border-top: 1px solid #000 !important; }
+    th { background: #fff !important; }
+    .leave-hd { background: #fff !important; }
+
+    /* Hide dropdown arrow completely */
+    select {
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      appearance: none !important;
+      background: transparent !important;
+      border: none !important;
+      border-bottom: 1px solid #000 !important;
+    }
+
+    /* Date in print */
+    input[type="date"] {
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      background: transparent !important;
+      border: none !important;
+      color: #000 !important;
+      font-size: 7.5pt !important;
+    }
+    .date-range { flex-direction: column !important; }
+    .date-row { flex-direction: row !important; justify-content: center !important; }
+    .date-range input[type="date"] { flex: 1 !important; width: auto !important; border: none !important; }
+
+    table { table-layout: auto !important; }
+    td, th { white-space: normal; word-break: break-word; }
+    * { overflow: visible !important; }
+    input, textarea { height: auto !important; min-height: 0 !important; }
+  }
+</style>
+</head>
+<body>
+<div class="screen-wrapper">
+
+  <div class="print-bar">
+    <a href="https://schoolmitra.github.io/schoolmitra/">&#127968; Home</a>
+    <button class="add-btn" onclick="addRow()">&#43; Add Row</button>
+    <button onclick="fillNilAndPrint()">&#128438; Print / PDF</button>
+    <span>Blank table cells = blank in print | Header blanks = dots</span>
+  </div>
+
+  <div class="page">
+    <div class="doc-title">ABSENTEE STATEMENT</div>
+
+    <div class="subtitle-row">
+      Category :-&nbsp;
+      <select id="cat-sel">
+        <option value="">-- Select Category --</option>
+        <option>BPSC TRE-1</option>
+        <option>BPSC TRE-2</option>
+        <option>BPSC TRE-3</option>
+        <option>EXCLUSIVE-1</option>
+        <option>EXCLUSIVE-2</option>
+        <option>EXCLUSIVE-3</option>
+        <option>EXCLUSIVE-4</option>
+        <option>Niyojit Teacher</option>
+        <option>GOB</option>
+        <option>SSA</option>
+      </select>
+    </div>
+
+    <div class="header-info">
+      <div class="header-row">
+        <div class="field-block">
+          <span class="lbl">विद्यालय का नाम :-</span>
+          <span class="ifield"><input type="text" id="school_name" class="nilable" placeholder="विद्यालय का नाम" style="min-width:230px; font-weight:bold; font-size:11pt; line-height:1.8; padding-top:2px;"></span>
+        </div>
+      </div>
+      <div class="header-row">
+        <div class="field-block">
+          <span class="lbl">प्रखंड :-</span>
+          <span class="ifield"><input type="text" id="block_name" class="nilable" placeholder="प्रखंड" style="min-width:100px;"></span>
+        </div>
+        <div class="field-block">
+          <span class="lbl">जिला :-</span>
+          <span class="ifield"><input type="text" id="district_name" class="nilable" placeholder="जिला" style="min-width:90px;"></span>
+        </div>
+        <div class="field-block">
+          <span class="lbl">माह / वर्ष :-</span>
+          <span class="ifield"><input type="text" id="month_name" class="nilable" placeholder="माह / वर्ष" style="min-width:110px;"></span>
+        </div>
+      </div>
+    </div>
+
+    <table id="main-table">
+      <colgroup>
+        <col style="width:2.5%">
+        <col style="width:7%">
+        <col style="width:10%">
+        <col style="width:auto">
+        <col style="width:10%">
+        <col style="width:9%">
+        <col style="width:9%">
+        <col style="width:4.5%">
+        <col style="width:3.5%">
+        <col style="width:3.5%">
+        <col style="width:3.5%">
+        <col style="width:3.5%">
+        <col style="width:3.5%">
+        <col style="width:3.5%">
+        <col style="width:3.5%">
+        <col style="width:4%">
+        <col style="width:6%">
+        <col style="width:2%">
+      </colgroup>
+      <thead>
+        <tr>
+          <th rowspan="2">क्रम<br>सं०</th>
+          <th rowspan="2">प्राण<br>संख्या</th>
+          <th rowspan="2">खाता संख्या<br>आई०एफ०एस०सी० कोड</th>
+          <th rowspan="2">ई-शिक्षा<br>कोष ID</th>
+          <th rowspan="2">शिक्षक का नाम</th>
+          <th rowspan="2">उपस्थित<br>कब से — कब तक</th>
+          <th rowspan="2">पदनाम</th>
+          <th rowspan="2">मूल<br>वेतन</th>
+          <th rowspan="2">कुल<br>कार्य<br>दिवस</th>
+          <th colspan="5" class="leave-hd">अवकाश का विवरण</th>
+          <th rowspan="2">अनुपस्थित<br>दिन</th>
+          <th rowspan="2">कुल उपस्थित<br>कार्य दिवस</th>
+          <th rowspan="2">अभ्युक्ति</th>
+          <th rowspan="2"></th>
+        </tr>
+        <tr>
+          <th class="leave-hd">आकस्मिक<br>अवकाश</th>
+          <th class="leave-hd">विशेषा /<br>रूपान्तरित</th>
+          <th class="leave-hd">अर्जित<br>अवकाश</th>
+          <th class="leave-hd">मातृत्व<br>काश</th>
+          <th class="leave-hd">सरकारी<br>अवकाश</th>
+        </tr>
+      </thead>
+      <tbody id="teacher-body"></tbody>
+    </table>
+
+    <div class="certification-box">
+      <p>1. प्रमाणित किया जाता है की इस सूची मे अंकित कार्यरत शिक्षक / शिक्षिका नियमित रूप से अंकित विद्यालय मे ही कार्यरत है | इनके वेतन का भुगतान किया जा सकता है |</p>
+      <p>2. ई-शिक्षा कोष के स्कूल लॉगिन मे सभी शिक्षकों का पूरे माह का उपस्थिति का मिलान कर यह अनुपस्थिति विवरणी वेतन भुगतान हेतु तैयार किया गया है, इनके वेतन का भुगतान किया जा सकता है |</p>
+      <p>3. मातृत्वकाश या जिनके वेतन का भुगतान नहीं किया जाना है, अभियुक्ति कॉलम मे लाल पेन से दर्ज है |</p>
+    </div>
+
+    <div class="sign-block">
+      <div class="left">
+        <div>ज्ञापांक :- <span class="ifield"><input type="text" class="nilable" id="gyapank" placeholder="ज्ञापांक" style="min-width:140px;"></span></div>
+        <div>दिनांक :- <span class="ifield"><input type="date" class="nilable" id="date_sign"></span></div>
+      </div>
+      <div class="right">
+        <div style="margin-bottom:22px;">प्रभारी प्रधानाध्यापक / प्रधानाध्यापक का हस्ताक्षर एवं मुहर</div>
+        <div>________________________________</div>
+        <div>नाम :- <span class="ifield"><input type="text" class="nilable" id="principal_name" placeholder="प्रधानाध्यापक का नाम" style="min-width:160px;"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function makeRow(num) {
+  var tr = document.createElement('tr');
+  tr.innerHTML =
+    '<td class="sr-td">' + num + '</td>' +
+    // प्राण - number, no placeholder in print
+    '<td><input type="number" class="nilable" placeholder="प्राण सं०" min="0"></td>' +
+    // Bank + IFSC
+    '<td>' +
+      '<div class="bank-cell">' +
+        '<input type="text" class="nilable" placeholder="खाता संख्या">' +
+        '<hr class="bank-divider">' +
+        '<input type="text" class="nilable ifsc-text" placeholder="IFSC CODE" maxlength="11">' +
+      '</div>' +
+    '</td>' +
+    // ID
+    '<td><input type="text" class="nilable" placeholder="ID"></td>' +
+    // नाम
+    '<td><input type="text" class="nilable" placeholder="शिक्षक का नाम"></td>' +
+    // Date range - two line format
+    '<td>' +
+      '<div class="date-range">' +
+        '<div class="date-row"><input type="date" class="nilable" title="कब से"><span class="sep">&nbsp;से —</span></div>' +
+        '<div class="date-row"><input type="date" class="nilable" title="कब तक"><span class="sep">&nbsp;तक</span></div>' +
+      '</div>' +
+    '</td>' +
+    // पदनाम
+    '<td><input type="text" class="nilable" placeholder="पदनाम"></td>' +
+    // मूल वेतन
+    '<td><input type="number" class="nilable" placeholder="₹" min="0"></td>' +
+    // कुल कार्य दिवस
+    '<td><input type="number" class="nilable" min="0"></td>' +
+    // 5 leave cols
+    '<td><input type="number" class="nilable" min="0"></td>' +
+    '<td><input type="number" class="nilable" min="0"></td>' +
+    '<td><input type="number" class="nilable" min="0"></td>' +
+    '<td><input type="number" class="nilable" min="0"></td>' +
+    '<td><input type="number" class="nilable" min="0"></td>' +
+    // अनुपस्थित दिन
+    '<td><input type="number" class="nilable" min="0"></td>' +
+    // कुल उपस्थित
+    '<td><input type="number" class="nilable" min="0"></td>' +
+    // अभ्युक्ति
+    '<td><textarea class="nilable" rows="2"></textarea></td>' +
+    // delete
+    '<td class="del-btn-cell"><button class="del-btn" onclick="delRow(this)">&#10005;</button></td>';
+  return tr;
+}
+
+function renumber() {
+  document.querySelectorAll('#teacher-body tr').forEach(function(r, i) {
+    var c = r.querySelector('.sr-td');
+    if (c) c.textContent = i + 1;
+  });
+}
+
+function addRow() {
+  var tbody = document.getElementById('teacher-body');
+  tbody.appendChild(makeRow(tbody.querySelectorAll('tr').length + 1));
+}
+
+function delRow(btn) {
+  var tbody = document.getElementById('teacher-body');
+  if (tbody.querySelectorAll('tr').length <= 1) { alert('Kam se kam 1 row chahiye!'); return; }
+  btn.closest('tr').remove();
+  renumber();
+}
+
+function fillNilAndPrint() {
+  var saved = [];
+
+  // Only fill header ifield inputs if blank
+  ['school_name','block_name','district_name','month_name','gyapank','date_sign','principal_name'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && el.value.trim() === '') {
+      saved.push({ el: el, val: '' });
+      el.value = '...............';
+    }
+  });
+
+  // Table cells: do NOT fill NIL — blank stays blank
+  // (placeholder already hidden via CSS ::placeholder in print)
+
+  window.print();
+
+  setTimeout(function() {
+    saved.forEach(function(o) { o.el.value = o.val; });
+  }, 1500);
+}
+
+// Init 3 blank rows
+(function() {
+  var tbody = document.getElementById('teacher-body');
+  for (var i = 1; i <= 3; i++) tbody.appendChild(makeRow(i));
+})();
+</script>
+</body>
+</html>

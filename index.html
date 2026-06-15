@@ -2813,25 +2813,30 @@ window.addEventListener('DOMContentLoaded', () => {
   if (refInput) refInput.value = today;
 });
 
-// ===== AI ASSISTANT =====
-const API_SYSTEM_PROMPT = `तुम "School Mitra AI" हो — बिहार के सरकारी विद्यालयों में पढ़ाने वाले शिक्षकों के लिए एक विशेष AI सहायक।
+// ===== AI ASSISTANT (Gemini) =====
+const GEMINI_API_KEY = 'AQ.Ab8RN6IwHHVq9ELHsDTSP3YiZ9adyVUkIlmtsKOzulMLnBWMPw';
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
+
+const SYSTEM_PROMPT = `तुम "School Mitra AI" हो — बिहार के सरकारी विद्यालयों में पढ़ाने वाले शिक्षकों के लिए एक विशेष AI सहायक।
 
 तुम इन विषयों पर विशेषज्ञ हो:
 1. बिहार सरकार की शिक्षा योजनाएं (MDM, ड्रेस, साइकिल, छात्रवृत्ति, बालिका प्रोत्साहन आदि)
 2. सरकारी विद्यालय में छात्र प्रवेश प्रक्रिया और नियम
 3. RTE Act 2009 के प्रावधान
 4. सरकारी फॉर्म भरने की प्रक्रिया
-5. Bihar school holiday calendar 2026 (कुल 75 अवकाश)
+5. Bihar school holiday calendar 2026 (कुल 75 अवकाश — ग्रीष्मावकाश 1-20 जून, दीपावली/छठ 7-17 नवम्बर, शीतकालीन 25-31 दिसम्बर)
 6. BSEB और शिक्षा विभाग की नीतियाँ
-7. शिक्षकों की सेवा सम्बन्धित जानकारी
+7. शिक्षकों की सेवा सम्बन्धित जानकारी (अवकाश, वेतन, सेवानिवृत्ति)
+8. e-Shikshakosh, UDISE+ पोर्टल की जानकारी
 
 नियम:
 - हमेशा सरल हिंदी में उत्तर दो
-- उत्तर संक्षिप्त और स्पष्ट हों
+- उत्तर संक्षिप्त और स्पष्ट हों (4-6 लाइन)
 - सरकारी योजनाओं की सटीक जानकारी दो
-- यदि कोई जानकारी निश्चित न हो तो "BEO कार्यालय से सत्यापित करें" कहो`;
+- यदि कोई जानकारी निश्चित न हो तो "BEO कार्यालय से सत्यापित करें" कहो
+- Bullet points का उपयोग करो जहाँ जरूरी हो`;
 
-const chatHistory = [];
+const geminiHistory = [];
 
 async function sendMessage() {
   const input = document.getElementById('aiInput');
@@ -2841,40 +2846,54 @@ async function sendMessage() {
   addMessage(msg, 'user');
   input.value = '';
   document.getElementById('aiSendBtn').disabled = true;
-
   const typingEl = addTyping();
 
-  chatHistory.push({ role: 'user', content: msg });
+  // Build conversation for Gemini
+  const contents = [];
+  // Add history
+  geminiHistory.forEach(h => {
+    contents.push({ role: h.role, parts: [{ text: h.text }] });
+  });
+  // Add current message
+  contents.push({ role: 'user', parts: [{ text: msg }] });
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch(GEMINI_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
+      headers: { 'Content-Type': 'application/json' },
       signal: AbortSignal.timeout(30000),
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: API_SYSTEM_PROMPT,
-        messages: chatHistory
+        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: contents,
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 800,
+          responseMimeType: "text/plain"
+        }
       })
     });
+
     if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error?.message || 'API Error ' + res.status);
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || 'API Error ' + res.status);
     }
+
     const data = await res.json();
-    const reply = data.content?.[0]?.text || 'क्षमा करें, उत्तर प्राप्त नहीं हुआ।';
-    chatHistory.push({ role: 'assistant', content: reply });
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'क्षमा करें, उत्तर प्राप्त नहीं हुआ।';
+
+    // Save to history
+    geminiHistory.push({ role: 'user', text: msg });
+    geminiHistory.push({ role: 'model', text: reply });
+    // Keep last 10 turns
+    if (geminiHistory.length > 20) geminiHistory.splice(0, 2);
+
     typingEl.remove();
     addMessage(reply, 'bot');
   } catch (e) {
     typingEl.remove();
-    const errMsg = e.name === 'TimeoutError' 
-      ? 'जवाब आने में देर हो रही है। कृपया दोबारा प्रयास करें। 🔄'
-      : 'AI से जुड़ने में समस्या है। इंटरनेट कनेक्शन जांचें और दोबारा प्रयास करें। 🔄';
+    const errMsg = e.name === 'TimeoutError'
+      ? 'जवाब आने में देर हो रही है। दोबारा प्रयास करें। 🔄'
+      : 'नेटवर्क समस्या है। इंटरनेट जाँचें और दोबारा प्रयास करें। 🔄';
     addMessage(errMsg, 'bot');
   }
   document.getElementById('aiSendBtn').disabled = false;
